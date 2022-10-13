@@ -2,6 +2,8 @@ package GUI;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.List;
 
@@ -10,7 +12,7 @@ import javax.swing.border.LineBorder;
 
 public class LabelPanel extends JPanel {
 	
-	private JLabel[][] lmatrix;
+	private JButton[][] lmatrix;
 	
 	public LabelPanel() {
 		this.setSize(new Dimension(200, 200));
@@ -21,11 +23,11 @@ public class LabelPanel extends JPanel {
 	}
 	
 	private void initLabelMatrix() {
-		lmatrix = new JLabel[13][13];
+		lmatrix = new JButton[13][13];
 		
 		for (int i = 0; i < 13; i++) {
 			for (int j = 0; j < 13; j++) {
-				lmatrix[i][j] = new JLabel(posToString(i, j), SwingConstants.CENTER);
+				lmatrix[i][j] = new JButton(posToString(i, j));
 				lmatrix[i][j].setBorder(new LineBorder(Color.BLACK));
 				if (i > j)
 					lmatrix[i][j].setBackground(new Color(191, 205, 211));
@@ -34,9 +36,45 @@ public class LabelPanel extends JPanel {
 				if (i == j)
 					lmatrix[i][j].setBackground(new Color(186, 255, 152));
 				lmatrix[i][j].setOpaque(true);
+				lmatrix[i][j].addActionListener(listener);
+				
 				this.add(lmatrix[i][j]);
 			}
 		}
+	}
+	
+	ActionListener listener = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (e.getSource() instanceof JButton) {
+            	int pos[] = stringToPos(((JButton) e.getSource()).getText());
+            	toggleYellow(pos[0], pos[1]);
+            }
+        }
+    };
+    
+    public void reset() {
+		for (int i = 0; i < 13; i++) {
+			for (int j = 0; j < 13; j++) {
+				if (lmatrix[i][j].getBackground().equals(new Color(252, 255, 0)))
+					toggleYellow(i, j);
+			}
+		}
+	}
+	
+	private void toggleYellow(int x, int y) {
+		Color Y = new Color(252, 255, 0);
+		// If the label is yellow
+		if (lmatrix[x][y].getBackground().equals(Y)) {
+			if (x > y)
+				lmatrix[x][y].setBackground(new Color(191, 205, 211));
+			if (x < y)
+				lmatrix[x][y].setBackground(new Color(212, 131, 126));
+			if (x == y)
+				lmatrix[x][y].setBackground(new Color(186, 255, 152));
+		}
+		else
+			lmatrix[x][y].setBackground(new Color(252, 255, 0));
 	}
 	
 	public void paintRange(String range) throws Exception {
@@ -161,6 +199,9 @@ public class LabelPanel extends JPanel {
 	private int[] stringToPos(String str) {
 		int[] pos = {-1, -1};
 		
+		if (charToCoord(str.charAt(0)) > charToCoord(str.charAt(1)))
+			str = swapPairString(str);
+		
 		if (str.length() == 3) {
 			if (str.charAt(2) == 's') {
 				pos[0] = charToCoord(str.charAt(0));
@@ -176,6 +217,18 @@ public class LabelPanel extends JPanel {
 			pos[1] = pos[0];
 		}
 		return pos;
+	}
+	
+	private String swapPairString(String str) {
+		// String are immutable, so we need a char array to swap the pairs
+		char carr[] = str.toCharArray();
+		char tmp;
+		
+		tmp = carr[0];
+		carr[0] = carr[1];
+		carr[1] = tmp;
+		
+		return new String(carr);
 	}
 	
 	private String coordToString(int c) {

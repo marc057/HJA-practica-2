@@ -31,7 +31,8 @@ public class Launcher {
 		JButton printRangeButton = new JButton("PRINT");
 		printRangeButton.addActionListener( e -> {
 			try {
-				labelPanel.paintRange(textField.getText());
+				// Pasa la string en el cuadro de texto a la matriz, sin espacios
+				labelPanel.paintRange(textField.getText().replaceAll("\\s+", ""));
 			} catch (Exception e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -39,15 +40,15 @@ public class Launcher {
 		});
 		southPanel.add(printRangeButton);
 		
+		// Reset Button
+		JButton resetButton = new JButton("RESET");
+		resetButton.addActionListener( e -> {
+			labelPanel.reset();
+		});
+		southPanel.add(resetButton);
+		
 		frame.add(mainPanel);
 		mainPanel.setVisible(true);
 		frame.setVisible(true);
-		
-	/*	// Testing, muy crudo todavia
-		try {
-			labelPanel.paintRange("J3o-J8o,TT+,84o,54s,96s-93s,Q3+");
-		} catch (Exception e) {
-			System.out.println("Exception: " + e.getMessage() + "\n");
-		}*/
 	}
 }
