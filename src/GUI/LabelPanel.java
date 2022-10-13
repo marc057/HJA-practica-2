@@ -39,7 +39,7 @@ public class LabelPanel extends JPanel {
 		}
 	}
 	
-	public void paintRange(String range) {
+	public void paintRange(String range) throws Exception {
 		List<String> pairs = Arrays.asList(range.split(","));
 		for (int i = 0; i < pairs.size(); i++) {	
 			String p = pairs.get(i);
@@ -50,7 +50,7 @@ public class LabelPanel extends JPanel {
 			}
 			
 			if (p.length() == 4) {
-				paintSuperiorDiff(p);
+				paintSuperiorDiff(p.substring(0, 3));
 			}
 			
 			if (p.length() == 3) {
@@ -67,8 +67,7 @@ public class LabelPanel extends JPanel {
 	
 	private void paintSingleSquare(String pair) {
 		int pos[] = stringToPos(pair);
-		
-		
+		lmatrix[pos[0]][pos[1]].setBackground(new Color(252, 255, 0));
 	}
 	
 	private void paintSuperiorEqual(String pair) {
@@ -79,9 +78,75 @@ public class LabelPanel extends JPanel {
 		}
 	}
 	
-	private void paintSuperiorDiff(String pair) {}
+	private void paintSuperiorDiff(String pair) {
+		int pos[] = stringToPos(pair);
+		int sup;
+		
+		if (pos[0] < pos[1]) {
+			sup = pos[0] + 1;
+			for (int i = pos[1]; i >= sup; i--) {
+				lmatrix[pos[0]][i].setBackground(new Color(252, 255, 0));
+			}
+		}
+		
+		else {
+			sup = pos[1] + 1;
+			for (int i = pos[0]; i >= sup; i--) {
+				lmatrix[i][pos[1]].setBackground(new Color(252, 255, 0));
+			}
+		}
+	}
 	
-	private void paintBetween(String pair) {}
+	private void paintBetween(String pair) throws Exception {
+		List<String> pairs = Arrays.asList(pair.split("-"));
+		int pos1[];
+		int pos2[];
+		int tmp = 0;
+		
+		if (pairs.size() != 2) {
+			throw new Exception("Paint bewtween exception: Number of args incorrect");
+		}
+		pos1 = stringToPos(pairs.get(0));
+		pos2 = stringToPos(pairs.get(1));
+		
+		// If suited
+		if (pos1[0] < pos1[1]) {
+			
+			// If not aligned, throw exception
+			if (pos2[0] != pos1[0] || pos2[0] > pos2[1])
+				throw new Exception("Paint bewtween exception: Elements not aligned");
+			
+			// If y coordinate of pos1 is greater than the one of pos2, we swap the elements
+			if (pos1[1] > pos2[1]) {
+				tmp = pos1[1];
+				pos1[1] = pos2[1];
+				pos2[1] = tmp;
+			}
+			
+			for (int i = pos1[1]; i <= pos2[1]; i++) {
+				lmatrix[pos1[0]][i].setBackground(new Color(252, 255, 0));
+			}
+		}
+		
+		// If off-suited
+		if (pos1[0] > pos1[1]) {
+			
+			// If not aligned, throw exception
+			if (pos2[1] != pos1[1] || pos2[0] < pos2[1])
+				throw new Exception("Paint bewtween exception: Elements not aligned");
+			
+			// If x of pos1 is greater than the one of pos2, we swap the elements
+			if (pos1[0] > pos2[0]) {
+				tmp = pos1[0];
+				pos1[0] = pos2[0];
+				pos2[0] = tmp;
+			}
+			
+			for (int i = pos1[0]; i <= pos2[0]; i++) {
+				lmatrix[i][pos1[1]].setBackground(new Color(252, 255, 0));
+			}
+		}
+	}
 	
 	private String posToString(int x, int y) {
 		String text = "";
