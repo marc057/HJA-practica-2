@@ -12,11 +12,16 @@ import javax.swing.border.LineBorder;
 
 public class LabelPanel extends JPanel {
 	
+	//Constants:------------------------------------------------------------------
+	private static final Color UnselectedOffsuit = new Color(191, 205, 211); //Bluish grey
+	private static final Color UnselectedSuited = new Color(212, 131, 126); //Red
+	private static final Color UnselectedPair = new Color(186, 255, 152); //Green
+	private static final Color Selected = new Color(252, 255, 0); //Yellow
+	
+	//Attributes:------------------------------
 	private JButton[][] lmatrix;
 	
 	public LabelPanel() {
-		this.setSize(new Dimension(200, 200));
-		this.setBounds(100, 100, 500, 500);
 	    this.setLayout(new GridLayout(13, 13));
 	    initLabelMatrix();
 		this.setVisible(true);
@@ -30,12 +35,11 @@ public class LabelPanel extends JPanel {
 				lmatrix[i][j] = new JButton(posToString(i, j));
 				lmatrix[i][j].setBorder(new LineBorder(Color.BLACK));
 				if (i > j)
-					lmatrix[i][j].setBackground(new Color(191, 205, 211));
+					lmatrix[i][j].setBackground(UnselectedOffsuit);
 				if (j > i)
-					lmatrix[i][j].setBackground(new Color(212, 131, 126));
+					lmatrix[i][j].setBackground(UnselectedSuited);
 				if (i == j)
-					lmatrix[i][j].setBackground(new Color(186, 255, 152));
-				lmatrix[i][j].setOpaque(true);
+					lmatrix[i][j].setBackground(UnselectedPair);
 				lmatrix[i][j].addActionListener(listener);
 				
 				this.add(lmatrix[i][j]);
@@ -56,25 +60,25 @@ public class LabelPanel extends JPanel {
     public void reset() {
 		for (int i = 0; i < 13; i++) {
 			for (int j = 0; j < 13; j++) {
-				if (lmatrix[i][j].getBackground().equals(new Color(252, 255, 0)))
+				if (lmatrix[i][j].getBackground().equals(Selected))
 					toggleYellow(i, j);
 			}
 		}
 	}
 	
 	private void toggleYellow(int x, int y) {
-		Color Y = new Color(252, 255, 0);
+		Color Y = Selected;
 		// If the label is yellow
 		if (lmatrix[x][y].getBackground().equals(Y)) {
 			if (x > y)
-				lmatrix[x][y].setBackground(new Color(191, 205, 211));
+				lmatrix[x][y].setBackground(UnselectedOffsuit);
 			if (x < y)
-				lmatrix[x][y].setBackground(new Color(212, 131, 126));
+				lmatrix[x][y].setBackground(UnselectedSuited);
 			if (x == y)
-				lmatrix[x][y].setBackground(new Color(186, 255, 152));
+				lmatrix[x][y].setBackground(UnselectedPair);
 		}
 		else
-			lmatrix[x][y].setBackground(new Color(252, 255, 0));
+			lmatrix[x][y].setBackground(Selected);
 	}
 	
 	public void paintRange(String range) throws Exception {
@@ -105,14 +109,14 @@ public class LabelPanel extends JPanel {
 	
 	private void paintSingleSquare(String pair) {
 		int pos[] = stringToPos(pair);
-		lmatrix[pos[0]][pos[1]].setBackground(new Color(252, 255, 0));
+		lmatrix[pos[0]][pos[1]].setBackground(Selected);
 	}
 	
 	private void paintSuperiorEqual(String pair) {
 		int pos[] = stringToPos(pair);
 		
 		for (int i = pos[0]; i >= 0; i--) {
-			lmatrix[i][i].setBackground(new Color(252, 255, 0));
+			lmatrix[i][i].setBackground(Selected);
 		}
 	}
 	
@@ -123,14 +127,14 @@ public class LabelPanel extends JPanel {
 		if (pos[0] < pos[1]) {
 			sup = pos[0] + 1;
 			for (int i = pos[1]; i >= sup; i--) {
-				lmatrix[pos[0]][i].setBackground(new Color(252, 255, 0));
+				lmatrix[pos[0]][i].setBackground(Selected);
 			}
 		}
 		
 		else {
 			sup = pos[1] + 1;
 			for (int i = pos[0]; i >= sup; i--) {
-				lmatrix[i][pos[1]].setBackground(new Color(252, 255, 0));
+				lmatrix[i][pos[1]].setBackground(Selected);
 			}
 		}
 	}
@@ -162,7 +166,7 @@ public class LabelPanel extends JPanel {
 			}
 			
 			for (int i = pos1[1]; i <= pos2[1]; i++) {
-				lmatrix[pos1[0]][i].setBackground(new Color(252, 255, 0));
+				lmatrix[pos1[0]][i].setBackground(Selected);
 			}
 		}
 		
@@ -181,7 +185,7 @@ public class LabelPanel extends JPanel {
 			}
 			
 			for (int i = pos1[0]; i <= pos2[0]; i++) {
-				lmatrix[i][pos1[1]].setBackground(new Color(252, 255, 0));
+				lmatrix[i][pos1[1]].setBackground(Selected);
 			}
 		}
 	}
