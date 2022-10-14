@@ -42,9 +42,9 @@ public class LabelPanel extends JPanel {
 	ActionListener listener = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (e.getSource() instanceof JButton) {
-            	int pos[] = stringToPos(((JButton) e.getSource()).getText());
-            	toggleYellow(pos[0], pos[1]);
+            if (e.getSource() instanceof LabelButton) {
+            	LabelButton target = (LabelButton) e.getSource();
+            	toggleYellow(target.i, target.j);
             }
         }
     };
@@ -58,16 +58,22 @@ public class LabelPanel extends JPanel {
 	}
 	
 	private void toggleYellow(int x, int y) {
-		LabelButton target = lmatrix[x][y];
-		
 		//Swap selection
-		target.selected = !target.selected;
-		target.color();
+		boolean newValue = lmatrix[x][y].toggleSelect();
 		
 		//Update stats
-		numSelected += target.selected ? 1 : -1;
-		
-		getSelectedPercentage();
+		numSelected += newValue ? 1 : -1;
+	}
+	
+	private void select(int i, int j) {
+		if (!lmatrix[i][j].selected) {
+			toggleYellow(i, j);
+		}
+	}
+	private void unselect(int i, int j) {
+		if (lmatrix[i][j].selected) {
+			toggleYellow(i,j);
+		}
 	}
 	
 	public void paintRange(String range) throws Exception {
@@ -179,29 +185,6 @@ public class LabelPanel extends JPanel {
 		}
 	}
 	
-	private void select(int i, int j) {
-		if (!lmatrix[i][j].selected) {
-			toggleYellow(i, j);
-		}
-	}
-	private void unselect(int i, int j) {
-		if (lmatrix[i][j].selected) {
-			toggleYellow(i,j);
-		}
-	}
-	
-	protected static String posToString(int x, int y) {
-		String text = "";
-		text = text.concat(coordToString(x)).concat(coordToString(y));
-		if (y > x)
-			return text.concat("s");
-		if (x > y) {
-			text = swapPairString(text);
-			return text.concat("o");
-		}
-		return text;
-	}
-	
 	private int[] stringToPos(String str) {
 		int[] pos = {-1, -1};
 		
@@ -237,11 +220,11 @@ public class LabelPanel extends JPanel {
 		return new String(carr);
 	}
 	
-	private static String coordToString(int c) {
+	public static String coordToString(int c) {
 		return String.valueOf(CardChars.get(c));
 	}
 	
-	private static int charToCoord(char c) {
+	public static int charToCoord(char c) {
 		return CardChars.indexOf(c);
 	}
 	

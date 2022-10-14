@@ -20,7 +20,7 @@ public class LabelButton extends JButton {
 		this.i = i;
 		this.j = j;
 		selected = false;
-		super.setText(LabelPanel.posToString(i, j));
+		text();
 	}
 	
 	public void color() {
@@ -32,5 +32,29 @@ public class LabelButton extends JButton {
 			else if (i > j) { this.setBackground(UnselectedOffsuit); }
 			else            { this.setBackground(UnselectedPair);    }
 		}
+	}
+	
+	private void text() {
+		String iStr = LabelPanel.coordToString(i);
+		String jStr = LabelPanel.coordToString(j);
+		String text;
+		
+		if (j >= i) {
+			text = iStr + jStr;
+			if (j > i) {
+				text += "s";
+			}
+		}
+		else {
+			text = jStr + iStr + "o";
+		}
+		
+		super.setText(text);
+	}
+	
+	public boolean toggleSelect() {
+		selected = !selected;
+		color();
+		return selected;
 	}
 }
