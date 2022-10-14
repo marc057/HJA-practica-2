@@ -1,6 +1,5 @@
 package GUI;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -12,14 +11,12 @@ import javax.swing.border.LineBorder;
 
 public class LabelPanel extends JPanel {
 	
-	//Constants:------------------------------------------------------------------
-	private static final Color UnselectedOffsuit = new Color(191, 205, 211); //Bluish grey
-	private static final Color UnselectedSuited = new Color(212, 131, 126); //Red
-	private static final Color UnselectedPair = new Color(186, 255, 152); //Green
-	private static final Color Selected = new Color(252, 255, 0); //Yellow
+	private static final List<Character> CardChars = Arrays.asList('A', 'K', 'Q', 'J', 'T', '9', '8', '7', '6', '5', '4', '3', '2');
+	private static final int NumLabels = 13*13;
 	
 	//Attributes:------------------------------
-	private JButton[][] lmatrix;
+	private LabelButton[][] lmatrix;
+	private int numSelected = 0;
 	
 	public LabelPanel() {
 	    this.setLayout(new GridLayout(13, 13));
@@ -28,18 +25,13 @@ public class LabelPanel extends JPanel {
 	}
 	
 	private void initLabelMatrix() {
-		lmatrix = new JButton[13][13];
+		lmatrix = new LabelButton[13][13];
 		
 		for (int i = 0; i < 13; i++) {
 			for (int j = 0; j < 13; j++) {
-				lmatrix[i][j] = new JButton(posToString(i, j));
+				lmatrix[i][j] = new LabelButton(i, j);
 				lmatrix[i][j].setBorder(new LineBorder(Color.BLACK));
-				if (i > j)
-					lmatrix[i][j].setBackground(UnselectedOffsuit);
-				if (j > i)
-					lmatrix[i][j].setBackground(UnselectedSuited);
-				if (i == j)
-					lmatrix[i][j].setBackground(UnselectedPair);
+				lmatrix[i][j].color();
 				lmatrix[i][j].addActionListener(listener);
 				
 				this.add(lmatrix[i][j]);
@@ -60,25 +52,22 @@ public class LabelPanel extends JPanel {
     public void reset() {
 		for (int i = 0; i < 13; i++) {
 			for (int j = 0; j < 13; j++) {
-				if (lmatrix[i][j].getBackground().equals(Selected))
-					toggleYellow(i, j);
+				unselect(i,j);
 			}
 		}
 	}
 	
 	private void toggleYellow(int x, int y) {
-		Color Y = Selected;
-		// If the label is yellow
-		if (lmatrix[x][y].getBackground().equals(Y)) {
-			if (x > y)
-				lmatrix[x][y].setBackground(UnselectedOffsuit);
-			if (x < y)
-				lmatrix[x][y].setBackground(UnselectedSuited);
-			if (x == y)
-				lmatrix[x][y].setBackground(UnselectedPair);
-		}
-		else
-			lmatrix[x][y].setBackground(Selected);
+		LabelButton target = lmatrix[x][y];
+		
+		//Swap selection
+		target.selected = !target.selected;
+		target.color();
+		
+		//Update stats
+		numSelected += target.selected ? 1 : -1;
+		
+		getSelectedPercentage();
 	}
 	
 	public void paintRange(String range) throws Exception {
@@ -109,14 +98,14 @@ public class LabelPanel extends JPanel {
 	
 	private void paintSingleSquare(String pair) {
 		int pos[] = stringToPos(pair);
-		lmatrix[pos[0]][pos[1]].setBackground(Selected);
+		select(pos[0], pos[1]);
 	}
 	
 	private void paintSuperiorEqual(String pair) {
 		int pos[] = stringToPos(pair);
 		
 		for (int i = pos[0]; i >= 0; i--) {
-			lmatrix[i][i].setBackground(Selected);
+			select(i, i);
 		}
 	}
 	
@@ -127,14 +116,14 @@ public class LabelPanel extends JPanel {
 		if (pos[0] < pos[1]) {
 			sup = pos[0] + 1;
 			for (int i = pos[1]; i >= sup; i--) {
-				lmatrix[pos[0]][i].setBackground(Selected);
+				select(pos[0], i);
 			}
 		}
 		
 		else {
 			sup = pos[1] + 1;
 			for (int i = pos[0]; i >= sup; i--) {
-				lmatrix[i][pos[1]].setBackground(Selected);
+				select(i, pos[1]);
 			}
 		}
 	}
@@ -166,7 +155,7 @@ public class LabelPanel extends JPanel {
 			}
 			
 			for (int i = pos1[1]; i <= pos2[1]; i++) {
-				lmatrix[pos1[0]][i].setBackground(Selected);
+				select(pos1[0], i);
 			}
 		}
 		
@@ -185,18 +174,31 @@ public class LabelPanel extends JPanel {
 			}
 			
 			for (int i = pos1[0]; i <= pos2[0]; i++) {
-				lmatrix[i][pos1[1]].setBackground(Selected);
+				select(i, pos1[1]);
 			}
 		}
 	}
 	
-	private String posToString(int x, int y) {
+	private void select(int i, int j) {
+		if (!lmatrix[i][j].selected) {
+			toggleYellow(i, j);
+		}
+	}
+	private void unselect(int i, int j) {
+		if (lmatrix[i][j].selected) {
+			toggleYellow(i,j);
+		}
+	}
+	
+	protected static String posToString(int x, int y) {
 		String text = "";
 		text = text.concat(coordToString(x)).concat(coordToString(y));
 		if (y > x)
 			return text.concat("s");
-		if (x > y)
+		if (x > y) {
+			text = swapPairString(text);
 			return text.concat("o");
+		}
 		return text;
 	}
 	
@@ -223,7 +225,7 @@ public class LabelPanel extends JPanel {
 		return pos;
 	}
 	
-	private String swapPairString(String str) {
+	private static String swapPairString(String str) {
 		// String are immutable, so we need a char array to swap the pairs
 		char carr[] = str.toCharArray();
 		char tmp;
@@ -235,69 +237,17 @@ public class LabelPanel extends JPanel {
 		return new String(carr);
 	}
 	
-	private String coordToString(int c) {
-		switch (c) {
-		case 0:
-			return "A";
-		case 1:
-			return "K";
-		case 2:
-			return "Q";
-		case 3:
-			return "J";
-		case 4:
-			return "T";
-		case 5:
-			return "9";
-		case 6:
-			return "8";
-		case 7:
-			return "7";
-		case 8:
-			return "6";
-		case 9:
-			return "5";
-		case 10:
-			return "4";
-		case 11:
-			return "3";
-		case 12:
-			return "2";
-		default:
-			return "E";
-		}
+	private static String coordToString(int c) {
+		return String.valueOf(CardChars.get(c));
 	}
 	
-	private int charToCoord(char c) {
-		switch (c) {
-		case 'A':
-			return 0;
-		case 'K':
-			return 1;
-		case 'Q':
-			return 2;
-		case 'J':
-			return 3;
-		case 'T':
-			return 4;
-		case '9':
-			return 5;
-		case '8':
-			return 6;
-		case '7':
-			return 7;
-		case '6':
-			return 8;
-		case '5':
-			return 9;
-		case '4':
-			return 10;
-		case '3':
-			return 11;
-		case '2':
-			return 12;
-		default:
-			return -1;
-		}
+	private static int charToCoord(char c) {
+		return CardChars.indexOf(c);
+	}
+	
+	private String getSelectedPercentage() {
+		double d = ((double) numSelected ) / NumLabels;
+		
+		return Double.toString(d);
 	}
 }
