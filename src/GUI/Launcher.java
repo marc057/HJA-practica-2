@@ -8,8 +8,8 @@ import javax.swing.event.ChangeListener;
 import Rankings.Sklansky;
 
 public class Launcher {
-		private static boolean reset = false;
-	public static void main(String[] args) {
+
+		public static void main(String[] args) {
 		
 		JFrame frame = new JFrame("Frame name");
 		frame.setSize(new Dimension(800, 800));
@@ -54,9 +54,7 @@ public class Launcher {
 		JButton resetButton = new JButton("RESET");
 		resetButton.addActionListener( e -> {
 			labelPanel.reset();
-			reset = true;
 			slider.setValue(100); //Para que cuando se cambia el rango vuelva a estar en 100%
-			reset = false;
 			
 		});
 		southPanel.add(resetButton);
@@ -92,10 +90,9 @@ public class Launcher {
 			@Override
 			public void stateChanged(ChangeEvent e) {
 				labelPerc.setText(slider.getValue() + "%");
-				if(!reset) {
 				int n = labelPanel.getSelectedPercentage(slider.getValue());//Numero de casillas que hay que dejar en selected tras el cambio del slider
 				labelPanel.redrawSk(n); //Deselecciona las manos que no sirven
-				}
+			
 			}
 	    });
 		

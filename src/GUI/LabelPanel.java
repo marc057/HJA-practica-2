@@ -71,7 +71,7 @@ public class LabelPanel extends JPanel {
 				listSelected.remove(matrixSk.getNum(i,j)); //Quita todas las manos de la lista de manos seleccionadas
 			}
 		}
-		numSelected--; //Por algun motivo numSelected es 1 tras un reset
+		numSelected = 0; //Por algun motivo numSelected no es 0 tras un reset
 
 	}
 	
@@ -275,10 +275,9 @@ public class LabelPanel extends JPanel {
 	
 	public void redrawSk(int n) { 
 	//Mira todas las manos, si estan seleccionadas y si deberian seguir estandolo, si no las quita de select y si deberian estarlo las vuelve a poner
-		if(n != 0) {
+		
 		Collections.sort(listSelected);
 		Collections.reverse(listSelected); //Espero que ordenar esta lista no provoque nada malo xd
-		
 		
 		List<Double> listSelectedNew = new ArrayList<>(); //Lista auxiliar que solo contiene los que van a quedarse, creo que esta está bien
 		
@@ -296,10 +295,11 @@ public class LabelPanel extends JPanel {
 					
 			}
 		}
-		}
+		
 		/*
 		 FALTA:
 		 que sea mas exacto cuando se quitan (en vez de round otra cosa)
+		 
 		 */
 	}
 }

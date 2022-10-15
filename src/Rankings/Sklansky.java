@@ -24,7 +24,7 @@ public class Sklansky {
 		matrix[0][11] = 31;
 		matrix[0][12] = 29;
 		//Fila 2 FALTA PONER LOS VALORES DE TODAS LAS FILAS
-		matrix[1][0] = 999;
+		/*matrix[1][0] = 999;
 		matrix[1][1] = 277;
 		matrix[1][2] = 137;
 		matrix[1][3] = 92;
@@ -37,6 +37,7 @@ public class Sklansky {
 		matrix[1][10] = 33;
 		matrix[1][11] = 31;
 		matrix[1][12] = 29;
+		*/
 		
 	}
 	
