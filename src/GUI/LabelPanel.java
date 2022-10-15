@@ -3,20 +3,28 @@ import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 
+import Rankings.Sklansky;
+
 public class LabelPanel extends JPanel {
 	
 	private static final List<Character> CardChars = Arrays.asList('A', 'K', 'Q', 'J', 'T', '9', '8', '7', '6', '5', '4', '3', '2');
-	private static final int NumLabels = 13*13;
+	
+	//private static final int NumLabels = 13*13; ???Cual es la utilidad de esto??
 	
 	//Attributes:------------------------------
 	private LabelButton[][] lmatrix;
 	private int numSelected = 0;
+	
+	private Sklansky matrixSk = new Sklansky(); //Matriz con los valores de el ranking Sklansky
+	List<Double> listSelected = new ArrayList<>(); //Guarda todas las manos que hay seleccionadas
 	
 	public LabelPanel() {
 	    this.setLayout(new GridLayout(13, 13));
@@ -45,6 +53,13 @@ public class LabelPanel extends JPanel {
             if (e.getSource() instanceof LabelButton) {
             	LabelButton target = (LabelButton) e.getSource();
             	toggleYellow(target.i, target.j);
+            	
+            	//Si despues de el toggle es amarillo lo añade a la lista de amarillos. Si deja de serlo lo quita
+            	if(lmatrix[target.i][target.j].isSelected())
+            		listSelected.add(matrixSk.getNum(target.i, target.j));
+            	else
+            		listSelected.remove(matrixSk.getNum(target.i, target.j));
+            	
             }
         }
     };
@@ -53,8 +68,11 @@ public class LabelPanel extends JPanel {
 		for (int i = 0; i < 13; i++) {
 			for (int j = 0; j < 13; j++) {
 				unselect(i,j);
+				listSelected.remove(matrixSk.getNum(i,j)); //Quita todas las manos de la lista de manos seleccionadas
 			}
 		}
+		numSelected--; //Por algun motivo numSelected es 1 tras un reset
+
 	}
 	
 	private void toggleYellow(int x, int y) {
@@ -105,6 +123,9 @@ public class LabelPanel extends JPanel {
 	private void paintSingleSquare(String pair) {
 		int pos[] = stringToPos(pair);
 		select(pos[0], pos[1]);
+		
+		listSelected.add(matrixSk.getNum(pos[0], pos[1])); //Añade la mano a la lista
+		
 	}
 	
 	private void paintSuperiorEqual(String pair) {
@@ -112,6 +133,9 @@ public class LabelPanel extends JPanel {
 		
 		for (int i = pos[0]; i >= 0; i--) {
 			select(i, i);
+			
+			listSelected.add(matrixSk.getNum(i, i)); //Añade la mano a la lista
+			
 		}
 	}
 	
@@ -123,6 +147,9 @@ public class LabelPanel extends JPanel {
 			sup = pos[0] + 1;
 			for (int i = pos[1]; i >= sup; i--) {
 				select(pos[0], i);
+				
+				listSelected.add(matrixSk.getNum(pos[0], i)); //Añade la mano a la lista
+				
 			}
 		}
 		
@@ -130,6 +157,9 @@ public class LabelPanel extends JPanel {
 			sup = pos[1] + 1;
 			for (int i = pos[0]; i >= sup; i--) {
 				select(i, pos[1]);
+				
+				listSelected.add(matrixSk.getNum(i, pos[1])); //Añade la mano a la lista
+				
 			}
 		}
 	}
@@ -162,6 +192,9 @@ public class LabelPanel extends JPanel {
 			
 			for (int i = pos1[1]; i <= pos2[1]; i++) {
 				select(pos1[0], i);
+				
+				listSelected.add(matrixSk.getNum(pos1[0], i)); //Añade la mano a la lista
+				
 			}
 		}
 		
@@ -181,6 +214,9 @@ public class LabelPanel extends JPanel {
 			
 			for (int i = pos1[0]; i <= pos2[0]; i++) {
 				select(i, pos1[1]);
+				
+				listSelected.add(matrixSk.getNum(i, pos1[1])); //Añade la mano a la lista
+				
 			}
 		}
 	}
@@ -228,9 +264,42 @@ public class LabelPanel extends JPanel {
 		return CardChars.indexOf(c);
 	}
 	
-	private String getSelectedPercentage() {
-		double d = ((double) numSelected ) / NumLabels;
+	public Integer getSelectedPercentage(int percentage) {//Devuelve el numero de manos que hay que mantener seleccionadas
 		
-		return Double.toString(d);
+		double d = numSelected * ((double) percentage) / 100;
+		
+		int num  = (int)Math.round(d);
+		
+		return num;
+	}
+	
+	public void redrawSk(int n) { 
+	//Mira todas las manos, si estan seleccionadas y si deberian seguir estandolo, si no las quita de select y si deberian estarlo las vuelve a poner
+		if(n != 0) {
+		Collections.sort(listSelected);
+		Collections.reverse(listSelected); //Espero que ordenar esta lista no provoque nada malo xd
+		
+		
+		List<Double> listSelectedNew = new ArrayList<>(); //Lista auxiliar que solo contiene los que van a quedarse, creo que esta está bien
+		
+		for(int i = 0; i < n; i++) {
+			listSelectedNew.add(listSelected.get(i));
+		}
+		
+		for (int i = 0; i < 13; i++) {
+			for (int j = 0; j < 13; j++) {
+				if(lmatrix[i][j].isSelected() && !listSelectedNew.contains(matrixSk.getNum(i, j)))  //Si esta seleccionado y ya no deberia se quita
+					lmatrix[i][j].toggleSelect();
+				else if(!lmatrix[i][j].isSelected() && listSelectedNew.contains(matrixSk.getNum(i, j)))	//Si no esta seleccionado y deberia se pone
+					lmatrix[i][j].toggleSelect();
+				
+					
+			}
+		}
+		}
+		/*
+		 FALTA:
+		 que sea mas exacto cuando se quitan (en vez de round otra cosa)
+		 */
 	}
 }

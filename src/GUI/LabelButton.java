@@ -57,4 +57,9 @@ public class LabelButton extends JButton {
 		color();
 		return selected;
 	}
+	public boolean isSelected() {
+		if(this.getBackground() == Selected)
+			return true;
+		return false;
+	}
 }
