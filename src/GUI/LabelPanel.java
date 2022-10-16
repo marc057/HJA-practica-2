@@ -55,7 +55,7 @@ public class LabelPanel extends JPanel {
             	toggleYellow(target.i, target.j);
             	
             	//Si despues de el toggle es amarillo lo añade a la lista de amarillos. Si deja de serlo lo quita
-            	if(lmatrix[target.i][target.j].isSelected())
+            	if(lmatrix[target.i][target.j].selected)
             		listSelected.add(matrixSk.getNum(target.i, target.j));
             	else
             		listSelected.remove(matrixSk.getNum(target.i, target.j));
@@ -71,7 +71,7 @@ public class LabelPanel extends JPanel {
 				listSelected.remove(matrixSk.getNum(i,j)); //Quita todas las manos de la lista de manos seleccionadas
 			}
 		}
-		numSelected = 0; //Por algun motivo numSelected no es 0 tras un reset
+		
 
 	}
 	
@@ -266,7 +266,7 @@ public class LabelPanel extends JPanel {
 	
 	public Integer getSelectedPercentage(int percentage) {//Devuelve el numero de manos que hay que mantener seleccionadas
 		
-		double d = numSelected * ((double) percentage) / 100;
+		double d = listSelected.size() * ((double) percentage) / 100;
 		
 		int num  = (int)Math.round(d);
 		
@@ -287,10 +287,10 @@ public class LabelPanel extends JPanel {
 		
 		for (int i = 0; i < 13; i++) {
 			for (int j = 0; j < 13; j++) {
-				if(lmatrix[i][j].isSelected() && !listSelectedNew.contains(matrixSk.getNum(i, j)))  //Si esta seleccionado y ya no deberia se quita
-					lmatrix[i][j].toggleSelect();
-				else if(!lmatrix[i][j].isSelected() && listSelectedNew.contains(matrixSk.getNum(i, j)))	//Si no esta seleccionado y deberia se pone
-					lmatrix[i][j].toggleSelect();
+				if(lmatrix[i][j].selected && !listSelectedNew.contains(matrixSk.getNum(i, j)))  //Si esta seleccionado y ya no deberia se quita
+					toggleYellow(i, j);
+				else if(!lmatrix[i][j].selected && listSelectedNew.contains(matrixSk.getNum(i, j)))	//Si no esta seleccionado y deberia se pone
+					toggleYellow(i, j);
 				
 					
 			}
