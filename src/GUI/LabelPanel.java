@@ -1,5 +1,4 @@
 package GUI;
-import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -7,9 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
 import javax.swing.*;
-import javax.swing.border.LineBorder;
 
 import Rankings.Sklansky;
 
@@ -21,7 +18,6 @@ public class LabelPanel extends JPanel {
 	
 	//Attributes:------------------------------
 	private LabelButton[][] lmatrix;
-	private int numSelected = 0;
 	
 	private Sklansky matrixSk = new Sklansky(); //Matriz con los valores de el ranking Sklansky
 	List<Double> listSelected = new ArrayList<>(); //Guarda todas las manos que hay seleccionadas
@@ -38,8 +34,6 @@ public class LabelPanel extends JPanel {
 		for (int i = 0; i < 13; i++) {
 			for (int j = 0; j < 13; j++) {
 				lmatrix[i][j] = new LabelButton(i, j);
-				lmatrix[i][j].setBorder(new LineBorder(Color.BLACK));
-				lmatrix[i][j].color();
 				lmatrix[i][j].addActionListener(listener);
 				
 				this.add(lmatrix[i][j]);
@@ -52,13 +46,14 @@ public class LabelPanel extends JPanel {
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() instanceof LabelButton) {
             	LabelButton target = (LabelButton) e.getSource();
-            	toggleYellow(target.i, target.j);
+            	target.toggleSelect();
+            	int i = target.getI(), j = target.getJ();
             	
             	//Si despues de el toggle es amarillo lo añade a la lista de amarillos. Si deja de serlo lo quita
-            	if(lmatrix[target.i][target.j].selected)
-            		listSelected.add(matrixSk.getNum(target.i, target.j));
+            	if(lmatrix[i][j].getSelected())
+            		listSelected.add(matrixSk.getNum(i, j));
             	else
-            		listSelected.remove(matrixSk.getNum(target.i, target.j));
+            		listSelected.remove(matrixSk.getNum(i, j));
             	
             }
         }
@@ -67,31 +62,18 @@ public class LabelPanel extends JPanel {
     public void reset() {
 		for (int i = 0; i < 13; i++) {
 			for (int j = 0; j < 13; j++) {
-				unselect(i,j);
+				setSelect(i,j, false);
 				listSelected.remove(matrixSk.getNum(i,j)); //Quita todas las manos de la lista de manos seleccionadas
 			}
 		}
-		
-
 	}
 	
-	private void toggleYellow(int x, int y) {
-		//Swap selection
-		boolean newValue = lmatrix[x][y].toggleSelect();
-		
-		//Update stats
-		numSelected += newValue ? 1 : -1;
+	private void toggleSelect(int x, int y) {
+		lmatrix[x][y].toggleSelect();	
 	}
-	
-	private void select(int i, int j) {
-		if (!lmatrix[i][j].selected) {
-			toggleYellow(i, j);
-		}
-	}
-	private void unselect(int i, int j) {
-		if (lmatrix[i][j].selected) {
-			toggleYellow(i,j);
-		}
+	private void setSelect(int i, int j, boolean value) {
+		LabelButton target = lmatrix[i][j];
+		if (target.getSelected() != value) { target.toggleSelect(); }
 	}
 	
 	public void paintRange(String range) throws Exception {
@@ -122,7 +104,7 @@ public class LabelPanel extends JPanel {
 	
 	private void paintSingleSquare(String pair) {
 		int pos[] = stringToPos(pair);
-		select(pos[0], pos[1]);
+		setSelect(pos[0], pos[1], true);
 		
 		listSelected.add(matrixSk.getNum(pos[0], pos[1])); //Añade la mano a la lista
 		
@@ -132,7 +114,7 @@ public class LabelPanel extends JPanel {
 		int pos[] = stringToPos(pair);
 		
 		for (int i = pos[0]; i >= 0; i--) {
-			select(i, i);
+			setSelect(i, i, true);
 			
 			listSelected.add(matrixSk.getNum(i, i)); //Añade la mano a la lista
 			
@@ -146,7 +128,7 @@ public class LabelPanel extends JPanel {
 		if (pos[0] < pos[1]) {
 			sup = pos[0] + 1;
 			for (int i = pos[1]; i >= sup; i--) {
-				select(pos[0], i);
+				setSelect(pos[0], i, true);
 				
 				listSelected.add(matrixSk.getNum(pos[0], i)); //Añade la mano a la lista
 				
@@ -156,7 +138,7 @@ public class LabelPanel extends JPanel {
 		else {
 			sup = pos[1] + 1;
 			for (int i = pos[0]; i >= sup; i--) {
-				select(i, pos[1]);
+				setSelect(i, pos[1], true);
 				
 				listSelected.add(matrixSk.getNum(i, pos[1])); //Añade la mano a la lista
 				
@@ -191,7 +173,7 @@ public class LabelPanel extends JPanel {
 			}
 			
 			for (int i = pos1[1]; i <= pos2[1]; i++) {
-				select(pos1[0], i);
+				setSelect(pos1[0], i, true);
 				
 				listSelected.add(matrixSk.getNum(pos1[0], i)); //Añade la mano a la lista
 				
@@ -213,7 +195,7 @@ public class LabelPanel extends JPanel {
 			}
 			
 			for (int i = pos1[0]; i <= pos2[0]; i++) {
-				select(i, pos1[1]);
+				setSelect(i, pos1[1], true);
 				
 				listSelected.add(matrixSk.getNum(i, pos1[1])); //Añade la mano a la lista
 				
@@ -287,12 +269,8 @@ public class LabelPanel extends JPanel {
 		
 		for (int i = 0; i < 13; i++) {
 			for (int j = 0; j < 13; j++) {
-				if(lmatrix[i][j].selected && !listSelectedNew.contains(matrixSk.getNum(i, j)))  //Si esta seleccionado y ya no deberia se quita
-					toggleYellow(i, j);
-				else if(!lmatrix[i][j].selected && listSelectedNew.contains(matrixSk.getNum(i, j)))	//Si no esta seleccionado y deberia se pone
-					toggleYellow(i, j);
-				
-					
+				boolean newValue = listSelectedNew.contains(matrixSk.getNum(i, j));
+				setSelect(i, j, newValue);			
 			}
 		}
 		
