@@ -13,25 +13,34 @@ import Rankings.Sklansky;
 
 public class LabelPanel extends JPanel {
 	
-	//Constants:--------------------------------------------------------------
+	//Constants:------------------------------------------------------------------
 	private static final List<Character> CardChars = Arrays.asList('A', 'K', 'Q', 'J', 'T', '9', '8', '7', '6', '5', '4', '3', '2');
+	private static final int NumLabels = 13*13;
 	
-	//private static final int NumLabels = 13*13; ???Cual es la utilidad de esto??
-	
-	//Attributes:------------------------------
+	//Attributes:-----------------------------------------------------------------
 	private LabelButton[][] lmatrix;
 	private JTextField textField; // Instance of textField, to change the text when a button is pressed
 	
 	private Sklansky matrixSk = new Sklansky(); //Matriz con los valores de el ranking Sklansky
 	List<Double> listSelected = new ArrayList<>(); //Guarda todas las manos que hay seleccionadas
 	
+<<<<<<< HEAD
 	public LabelPanel(JTextField textField) {
+=======
+	//Getters:---------------------------------------------------------------------
+	public static String coordToString(int c) { return String.valueOf(CardChars.get(c)); }
+	public static int charToCoord(char c) { return CardChars.indexOf(c); }
+	
+	//Constructor:------------------------------------------------------------------
+	public LabelPanel() {
+>>>>>>> a285007e1922f8bb060fce2c2550843740253966
 	    this.setLayout(new GridLayout(13, 13));
 	    this.textField = textField;
 	    initLabelMatrix();
 		this.setVisible(true);
 	}
 	
+	//Setup:------------------------------------------------------------------------
 	private void initLabelMatrix() {
 		lmatrix = new LabelButton[13][13];
 		
@@ -39,7 +48,6 @@ public class LabelPanel extends JPanel {
 			for (int j = 0; j < 13; j++) {
 				lmatrix[i][j] = new LabelButton(i, j);
 				lmatrix[i][j].addActionListener(listener);
-				
 				this.add(lmatrix[i][j]);
 			}
 		}
@@ -51,15 +59,19 @@ public class LabelPanel extends JPanel {
             if (e.getSource() instanceof LabelButton) {
             	LabelButton target = (LabelButton) e.getSource();
             	target.toggleSelect();
-            	int i = target.getI(), j = target.getJ();
             	
-            	//Si despues de el toggle es amarillo lo añade a la lista de amarillos. Si deja de serlo lo quita
-            	if(lmatrix[i][j].getSelected())
-            		listSelected.add(matrixSk.getNum(i, j));
-            	else
-            		listSelected.remove(matrixSk.getNum(i, j));
-            	
+<<<<<<< HEAD
             	textRange();
+=======
+            	//TODO: Quitar este codigo:::::::::::::::::::::::
+	            	int i = target.getI(), j = target.getJ();
+	            	//Si despues de el toggle es amarillo lo añade a la lista de amarillos. Si deja de serlo lo quita
+	            	if(lmatrix[i][j].getSelected())
+	            		listSelected.add(matrixSk.getNum(i, j));
+	            	else
+	            		listSelected.remove(matrixSk.getNum(i, j));
+            	//::::::::::::::::::::::::::::::::::::::::::::::::
+>>>>>>> a285007e1922f8bb060fce2c2550843740253966
             }
         }
     };
@@ -291,14 +303,6 @@ public class LabelPanel extends JPanel {
 		carr[1] = tmp;
 		
 		return new String(carr);
-	}
-	
-	public static String coordToString(int c) {
-		return String.valueOf(CardChars.get(c));
-	}
-	
-	public static int charToCoord(char c) {
-		return CardChars.indexOf(c);
 	}
 	
 	public Integer getSelectedPercentage(int percentage) {//Devuelve el numero de manos que hay que mantener seleccionadas
