@@ -1,4 +1,5 @@
 package GUI;
+
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -12,6 +13,7 @@ import Rankings.Sklansky;
 
 public class LabelPanel extends JPanel {
 	
+	//Constants:--------------------------------------------------------------
 	private static final List<Character> CardChars = Arrays.asList('A', 'K', 'Q', 'J', 'T', '9', '8', '7', '6', '5', '4', '3', '2');
 	
 	//private static final int NumLabels = 13*13; ???Cual es la utilidad de esto??
