@@ -273,12 +273,12 @@ public class LabelPanel extends JPanel {
 
 		for(int i = 0; i < n; i++) {
 			listSelectedNew.add(list.get(i));
-			
 		}
 		for (int i = 0; i < 13; i++) {
 			for (int j = 0; j < 13; j++) {
 				boolean newValue = listSelectedNew.contains(matrixSk.getNum(i, j));
-				setSelect(i, j, newValue);			
+				setSelect(i, j, newValue);
+				listSelectedNew.remove(matrixSk.getNum(i, j));
 			}
 		}
 		
