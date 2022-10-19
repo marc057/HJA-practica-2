@@ -47,7 +47,7 @@ public class Launcher {
 				labelPanel.reset();
 				labelPanel.paintRange(textField.getText().replaceAll("\\s+", ""));
 				
-				int newSliderValue =  (int) Math.round((((double)labelPanel.getListSelectedSize())/ 169) * 100);
+				int newSliderValue =  (int) Math.round((((double)LabelButton.getNumSelected())/ 169) * 100);
 				
 				sliderPrintChange = true;
 				slider.setValue(newSliderValue);

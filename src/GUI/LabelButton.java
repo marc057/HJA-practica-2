@@ -22,7 +22,7 @@ public class LabelButton extends JButton {
 	public int getI() { return i; }
 	public int getJ() { return j; }
 	public boolean getSelected() { return selected; }
-	public int getNumSelected() { return numSelected; }
+	public static int getNumSelected() { return numSelected; }
 	
 	//Constructor:------------------------------------------------------------------
 	public LabelButton(int i, int j) {
@@ -71,4 +71,5 @@ public class LabelButton extends JButton {
 		numSelected += selected ? 1 : -1;
 		color();
 	}
+
 }
