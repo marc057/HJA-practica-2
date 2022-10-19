@@ -8,7 +8,9 @@ import javax.swing.event.ChangeListener;
 import Rankings.Sklansky;
 
 public class Launcher {
-
+	
+		private static boolean sliderPrintChange = false;
+		
 		public static void main(String[] args) {
 		
 		JFrame frame = new JFrame("Frame name");
@@ -33,18 +35,26 @@ public class Launcher {
 		southPanel.add(textField);
 		
 		//Slider solo declarado
-		JSlider slider = new JSlider(0,100,100);//Min 0 Max 100 empieza en 100
+		JSlider slider = new JSlider(0,100,0);//Min 0 Max 100 empieza en 100
+		//Label con el porcentaje del slider
+		JLabel labelPerc = new JLabel();
 		
 		// Print Button
 		JButton printRangeButton = new JButton("PRINT");
 		printRangeButton.addActionListener( e -> {
 			try {
 				// Pasa la string en el cuadro de texto a la matriz, sin espacios
+				labelPanel.reset();
 				labelPanel.paintRange(textField.getText().replaceAll("\\s+", ""));
-				slider.setValue(100); //Para que cuando se cambia el rango vuelva a estar en 100%
+				
+				int newSliderValue =  (int) Math.round((((double)labelPanel.getListSelectedSize())/ 169) * 100);
+				
+				sliderPrintChange = true;
+				slider.setValue(newSliderValue);
+				labelPerc.setText(newSliderValue + "%");
+				sliderPrintChange = false;
 				
 			} catch (Exception e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 		});
@@ -54,7 +64,7 @@ public class Launcher {
 		JButton resetButton = new JButton("RESET");
 		resetButton.addActionListener( e -> {
 			labelPanel.reset();
-			slider.setValue(100); //Para que cuando se cambia el rango vuelva a estar en 100%
+			slider.setValue(0); //Para que cuando se cambia el rango vuelva a estar en 0%
 			
 		});
 		southPanel.add(resetButton);
@@ -69,8 +79,6 @@ public class Launcher {
 		
 		slider.setPaintLabels(true);
 		
-		//Label con el porcentaje del slider
-		JLabel labelPerc = new JLabel();
 		labelPerc.setPreferredSize(new Dimension(40, 30));
 		labelPerc.setText(slider.getValue() + "%"); //Valor inicial
 		
@@ -89,10 +97,11 @@ public class Launcher {
 		slider.addChangeListener(new ChangeListener() { //Cambia el valor del label para que vaya con el slider
 			@Override
 			public void stateChanged(ChangeEvent e) {
+				if(!sliderPrintChange) {
 				labelPerc.setText(slider.getValue() + "%");
 				int n = labelPanel.getSelectedPercentage(slider.getValue());//Numero de casillas que hay que dejar en selected tras el cambio del slider
 				labelPanel.redrawSk(n); //Deselecciona las manos que no sirven
-			
+				}
 			}
 	    });
 		
