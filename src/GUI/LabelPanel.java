@@ -20,12 +20,14 @@ public class LabelPanel extends JPanel {
 	
 	//Attributes:------------------------------
 	private LabelButton[][] lmatrix;
+	private JTextField textField; // Instance of textField, to change the text when a button is pressed
 	
 	private Sklansky matrixSk = new Sklansky(); //Matriz con los valores de el ranking Sklansky
 	List<Double> listSelected = new ArrayList<>(); //Guarda todas las manos que hay seleccionadas
 	
-	public LabelPanel() {
+	public LabelPanel(JTextField textField) {
 	    this.setLayout(new GridLayout(13, 13));
+	    this.textField = textField;
 	    initLabelMatrix();
 		this.setVisible(true);
 	}
@@ -57,11 +59,18 @@ public class LabelPanel extends JPanel {
             	else
             		listSelected.remove(matrixSk.getNum(i, j));
             	
+            	textRange();
             }
         }
     };
     
-    public void reset() {
+    public void textRange() {
+    	textRangeEqual();
+    	textRangeSuited();
+    	textRangeOffsuited();
+    }
+
+	public void reset() {
 		for (int i = 0; i < 13; i++) {
 			for (int j = 0; j < 13; j++) {
 				setSelect(i,j, false);
@@ -75,7 +84,51 @@ public class LabelPanel extends JPanel {
 	}
 	private void setSelect(int i, int j, boolean value) {
 		LabelButton target = lmatrix[i][j];
+		
 		if (target.getSelected() != value) { target.toggleSelect(); }
+	}
+	
+	private String printRangeLine(int m1, int m2) {
+		if (m1 == -1)
+			return "";
+		if (m2 == -1) {
+			return lmatrix[m1][m1].getText();
+		}
+		return "";
+	}
+	
+	private void printRangeLine(int[] m1, int[] m2) {
+	}
+	
+	private void textRangeEqual() {
+		int marker1 = -1;
+		int marker2 = -1;
+		String rng = "";
+		
+		for (int i = 12; i >= 0; i--) {
+			if (lmatrix[i][i].getSelected()) {
+				if (marker1 == -1)
+					marker1 = i;
+				else
+					marker2 = i;
+			}
+			else {
+				rng += "," + printRangeLine(marker1, marker2);
+				marker1 = -1;
+				marker2 = -1;
+			}
+		}
+		textField.setText(rng);
+	}
+
+	private void textRangeSuited() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void textRangeOffsuited() {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	public void paintRange(String range) throws Exception {

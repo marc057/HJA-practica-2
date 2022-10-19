@@ -31,7 +31,7 @@ public class LabelButton extends JButton {
 		selected = false;
 		text();
 		color();
-		super.setBorder(new LineBorder(Color.BLACK));
+		this.setBorder(new LineBorder(Color.BLACK)); // esto antes llamaba a super, no se por que
 	}
 	
 	//Setup:------------------------------------------------------------------------
@@ -50,7 +50,7 @@ public class LabelButton extends JButton {
 			text = jStr + iStr + "o";
 		}
 		
-		super.setText(text);
+		this.setText(text); // esto antes llamaba a super, no se por que
 	}
 	
 	//Update:------------------------------------------------------------------------

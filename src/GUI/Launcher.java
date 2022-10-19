@@ -18,10 +18,6 @@ public class Launcher {
 		JPanel mainPanel = new JPanel();
 		mainPanel.setLayout(new BorderLayout());
 		
-		// Panel containing the label matrix
-		LabelPanel labelPanel = new LabelPanel();
-		mainPanel.add(labelPanel, BorderLayout.CENTER);
-		
 		// Panel containing the textfield, print button, ranking selector and reset
 		JPanel southPanel = new JPanel();
 		southPanel.setLayout(new FlowLayout());
@@ -31,6 +27,10 @@ public class Launcher {
 		JTextField textField = new JTextField();
 		textField.setPreferredSize(new Dimension(120, 30));
 		southPanel.add(textField);
+		
+		// Panel containing the label matrix
+		LabelPanel labelPanel = new LabelPanel(textField);
+		mainPanel.add(labelPanel, BorderLayout.CENTER);
 		
 		//Slider solo declarado
 		JSlider slider = new JSlider(0,100,100);//Min 0 Max 100 empieza en 100
@@ -103,6 +103,7 @@ public class Launcher {
 		
 		frame.add(mainPanel);
 		mainPanel.setVisible(true);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
 	}
 }
