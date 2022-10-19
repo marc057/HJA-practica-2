@@ -1,9 +1,11 @@
 package Rankings;
 
+import java.util.ArrayList;
+import java.util.List;
 
 public class Sklansky {
 	private static final int NumLabels = 13*13;
-	double[][] matrix = new double[13][13];	
+	static double[][] matrix = new double[13][13];	
 	
 	public Sklansky() {
 		initSlansky();
@@ -20,11 +22,22 @@ public class Sklansky {
 		/*7x*/ matrix[7] = new double[] { 31,  14, 8.5, 6.3, 5.1, 4.3, 3.8,  67, 4.2, 3.3, 2.6,   2, 1.6};
 		/*6x*/ matrix[8] = new double[] { 28,  13, 8.1, 5.4, 4.3, 3.5,   3, 2.7,  58, 3.1, 2.4, 1.9, 1.5};
 		/*5x*/ matrix[9] = new double[] { 28,  12, 7.5,   5, 3.5, 2.8, 2.4, 2.1,   2,  49, 2.4, 1.9, 1.6};
-		/*4x*/ matrix[10] = new double[] { 26,  11, 6.8, 4.5, 3.1, 2.2, 1.9, 1.7, 1.6, 1.6,  41, 1.7, 1.4};
-		/*3x*/ matrix[11] = new double[] { 24,  11, 6.3,   4, 2.7,   2, 1.5, 1.4, 1.3, 1.3, 1.2,  33, 1.3};
-		/*2x*/ matrix[12] = new double[] { 23,  10, 5.7, 3.4, 2.4, 1.8, 1.4, 1.1, 1.1, 1.1,   1, 0.9,  24};
+		/*4x*/ matrix[10] = new double[] { 26, 11, 6.8, 4.5, 3.1, 2.2, 1.9, 1.7, 1.6, 1.6,  41, 1.7, 1.4};
+		/*3x*/ matrix[11] = new double[] { 24, 11, 6.3,   4, 2.7,   2, 1.5, 1.4, 1.3, 1.3, 1.2,  33, 1.3};
+		/*2x*/ matrix[12] = new double[] { 23, 10, 5.7, 3.4, 2.4, 1.8, 1.4, 1.1, 1.1, 1.1,   1, 0.9,  24};
 	}
-	
+	public static List<Double> matrixToList(){
+		List<Double> list = new ArrayList<>();
+		
+		for(int i = 0; i < 13; i++) {
+			for(int j = 0; j < 13; j++) {
+				list.add(matrix[i][j]);
+			}
+		}
+		
+		return list;
+		
+	}
 	public double getNum(int i, int j) {
 		return matrix[i][j];
 	}
