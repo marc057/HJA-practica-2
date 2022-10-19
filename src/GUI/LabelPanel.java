@@ -332,4 +332,9 @@ public class LabelPanel extends JPanel {
 		 
 		 */
 	}
+	public double getListSelectedSize() {
+		
+		return listSelected.size();
+	}
+	
 }
