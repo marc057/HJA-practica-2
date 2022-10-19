@@ -300,7 +300,7 @@ public class LabelPanel extends JPanel {
 	
 	public Integer getSelectedPercentage(int percentage) {//Devuelve el numero de manos que hay que mantener seleccionadas
 		
-		double d = listSelected.size() * ((double) percentage) / 100;
+		double d = 169  * ((double) percentage) / 100;
 		
 		int num  = (int)Math.round(d);
 		
@@ -309,20 +309,22 @@ public class LabelPanel extends JPanel {
 	
 	public void redrawSk(int n) { 
 	//Mira todas las manos, si estan seleccionadas y si deberian seguir estandolo, si no las quita de select y si deberian estarlo las vuelve a poner
+		List<Double> list = Sklansky.matrixToList();
 		
-		Collections.sort(listSelected);
-		Collections.reverse(listSelected); //Espero que ordenar esta lista no provoque nada malo xd
+		Collections.sort(list);
+		Collections.reverse(list);
 		
 		List<Double> listSelectedNew = new ArrayList<>(); //Lista auxiliar que solo contiene los que van a quedarse, creo que esta está bien
-		
+		//System.out.println(list.contains(matrixSk.getNum(12, 11)));
+
 		for(int i = 0; i < n; i++) {
-			listSelectedNew.add(listSelected.get(i));
+			listSelectedNew.add(list.get(i));
 		}
-		
 		for (int i = 0; i < 13; i++) {
 			for (int j = 0; j < 13; j++) {
 				boolean newValue = listSelectedNew.contains(matrixSk.getNum(i, j));
-				setSelect(i, j, newValue);			
+				setSelect(i, j, newValue);
+				listSelectedNew.remove(matrixSk.getNum(i, j));
 			}
 		}
 		
