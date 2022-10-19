@@ -24,16 +24,12 @@ public class LabelPanel extends JPanel {
 	private Sklansky matrixSk = new Sklansky(); //Matriz con los valores de el ranking Sklansky
 	List<Double> listSelected = new ArrayList<>(); //Guarda todas las manos que hay seleccionadas
 	
-<<<<<<< HEAD
-	public LabelPanel(JTextField textField) {
-=======
 	//Getters:---------------------------------------------------------------------
 	public static String coordToString(int c) { return String.valueOf(CardChars.get(c)); }
 	public static int charToCoord(char c) { return CardChars.indexOf(c); }
 	
 	//Constructor:------------------------------------------------------------------
-	public LabelPanel() {
->>>>>>> a285007e1922f8bb060fce2c2550843740253966
+	public LabelPanel(JTextField textField) {
 	    this.setLayout(new GridLayout(13, 13));
 	    this.textField = textField;
 	    initLabelMatrix();
@@ -60,9 +56,7 @@ public class LabelPanel extends JPanel {
             	LabelButton target = (LabelButton) e.getSource();
             	target.toggleSelect();
             	
-<<<<<<< HEAD
             	textRange();
-=======
             	//TODO: Quitar este codigo:::::::::::::::::::::::
 	            	int i = target.getI(), j = target.getJ();
 	            	//Si despues de el toggle es amarillo lo añade a la lista de amarillos. Si deja de serlo lo quita
@@ -71,7 +65,6 @@ public class LabelPanel extends JPanel {
 	            	else
 	            		listSelected.remove(matrixSk.getNum(i, j));
             	//::::::::::::::::::::::::::::::::::::::::::::::::
->>>>>>> a285007e1922f8bb060fce2c2550843740253966
             }
         }
     };
