@@ -38,60 +38,70 @@ public class Parte3 {
 		Map<String, Integer> combinations = new HashMap<>();
 		combinations.put(COMBINATIONS_STR, 0);
 		int size = boardCards.size();
-		List<Card> currList;
+		List<Card> fromPlayer;
+		List<Card> fromBoard; 
 		
 		for (List<Card> pair : pairs) {
 			switch(size) {
 			case 3: //Pick exactly 2(out of 2) from pair and 3(out of 3) from board
-				currList = new ArrayList<>();
-				currList.addAll(pair);
-				currList.addAll(boardCards);
+				fromPlayer = new ArrayList<>();
+				fromPlayer.addAll(pair);
 				
-				processHand(combinations, currList);
+				fromBoard = new ArrayList<>();
+				fromBoard.addAll(boardCards);
+				
+				processHand(combinations, fromPlayer, fromBoard);
 				break;
 			case 4: //Pick 1-2(out of 2) from pair and 3-4(out of 4) from board
 				//Pick 2 from pair:----------------
 				for (int ig = 0; ig < size; ig++) { //Select ignored card from board
-					currList = new ArrayList<>();
-					currList.addAll(pair);
+					fromPlayer = new ArrayList<>();
+					fromPlayer.addAll(pair);
+					
+					fromBoard = new ArrayList<>();
 					for (int i = 0; i < size; i++) {
 						if (ig == i) { continue; }
-						currList.add(boardCards.get(i));
+						fromBoard.add(boardCards.get(i));
 					}
-					processHand(combinations, currList);
+					processHand(combinations, fromPlayer, fromBoard);
 				}
 				//Pick 1 from pair:---------------
 				for (int i = 0; i < 2; i++) { //Select picked card from pair
-					currList = new ArrayList<>();
-					currList.add(pair.get(i));
-					currList.addAll(boardCards);
-					processHand(combinations, currList);
+					fromPlayer = new ArrayList<>();
+					fromPlayer.add(pair.get(i));
+					
+					fromBoard = new ArrayList<>();
+					fromBoard.addAll(boardCards);
+					processHand(combinations, fromPlayer, fromBoard);
 				}
 				break;
 			case 5: //Pick 1-2(out of 2) from pair and 3-4(out of 5) from board
 				//Pick 2 from pair:----------------
 				for (int ig1 = 0; ig1 < size; ig1++) { //Select 2 ignored cards from board
 					for (int ig2 = ig1 + 1; ig2 < size; ig2++) {
-						currList = new ArrayList<>();
-						currList.addAll(pair);
+						fromPlayer = new ArrayList<>();
+						fromPlayer.addAll(pair);
+						
+						fromBoard = new ArrayList<>();
 						for (int i = 0; i < size; i++) {
 							if (ig1 == i || ig2 == i) { continue; }
-							currList.add(boardCards.get(i));
+							fromBoard.add(boardCards.get(i));
 						}
-						processHand(combinations, currList);
+						processHand(combinations, fromPlayer, fromBoard);
 					}
 				}
 				//Pick 1 from pair:---------------
 				for (int i = 0; i < 2; i++) { //Select picked card from pair
 					for (int ig = 0; ig < size; ig++) { //Select ignored card from board
-						currList = new ArrayList<>();
-						currList.add(pair.get(i));
+						fromPlayer = new ArrayList<>();
+						fromPlayer.add(pair.get(i));
 						
+						fromBoard = new ArrayList<>();
 						for (int j = 0; j < size; j++) {
 							if (j == ig) { continue; }
-							currList.add(boardCards.get(j));
+							fromBoard.add(boardCards.get(j));
 						}
-						processHand(combinations, currList);
+						processHand(combinations, fromPlayer, fromBoard);
 					}				
 				}
 				break;
@@ -109,22 +119,75 @@ public class Parte3 {
 		
 		for(Character cA : Card.colorChars) {
 			Card a = new Card(nA, cA);
+			
+			if (boardCards.contains(a)) { continue; }
+			
 			for(Character cB : Card.colorChars) {
-				if (sameColor != (cA.equals(cB))) { continue; } // Discard when not in scope of this box
-				Card b = new Card(nB, cB);
-				output.add(Arrays.asList(a, b));
+				if (sameColor == (cA.equals(cB))) { // Discard when not in scope of this box
+					Card b = new Card(nB, cB);
+					
+					if (boardCards.contains(b)) { continue; }
+					
+					output.add(Arrays.asList(a, b));
+				} 
 			}
 		}
 		
 		return output;
 	}
 	
-	private static void processHand(Map<String, Integer> combinations, List<Card> currList) {
+	private static void processHand(Map<String, Integer> combinations, List<Card> fromPlayer, List<Card> fromBoard) {
+		fromPlayer.sort(null);
+		fromBoard.sort(null);
+		
+		List<Card> currList = new ArrayList<>();
+		currList.addAll(fromPlayer);
+		currList.addAll(fromBoard);
+		currList.sort(null);
+		
 		Hand hand = evaluateHand(currList);
 		String handName = hand.getName();
-		combinations.putIfAbsent(handName, 0);
-		combinations.computeIfPresent(handName, (key, val) -> val + 1 );
 		combinations.computeIfPresent(COMBINATIONS_STR, (key, val) -> val + 1);
+		
+		if (!handName.equals("pair")) {
+			combinations.putIfAbsent(handName, 0);
+			combinations.computeIfPresent(handName, (key, val) -> val + 1 );
+		}
+		else {
+			HandPair pairHand = (HandPair) hand;
+			int pairNum = pairHand.getPairNum();
+			
+			boolean isPocket = true;
+			for (Card c : fromPlayer) {
+				if (c.number != pairNum) { isPocket = false; break; }
+			}
+			
+			//Es de pocket?
+			if (fromPlayer.size() == 2 && isPocket) {
+				if (pairNum > fromBoard.get(0).number) { //Es overpair?
+					combinations.putIfAbsent("Overpair", 0);
+					combinations.computeIfPresent("Overpair", (key, val) -> val + 1 );
+				}
+				else {//Es pocket pair below top pair
+					combinations.putIfAbsent("Pocket pair below top pair", 0);
+					combinations.computeIfPresent("Pocket pair below top pair", (key, val) -> val + 1 );
+				}
+			}
+			else { // No es pocket:
+				if (fromBoard.get(0).number == pairNum) {//Es top pair?
+					combinations.putIfAbsent("Top pair", 0);
+					combinations.computeIfPresent("Top pair", (key, val) -> val + 1 );
+				}
+				else if (fromBoard.get(1).number == pairNum) { //Es middle pair
+					combinations.putIfAbsent("Middle pair", 0);
+					combinations.computeIfPresent("Middle pair", (key, val) -> val + 1 );
+				}
+				else { // Weak pair
+					combinations.putIfAbsent("Weak pair", 0);
+					combinations.computeIfPresent("Weak pair", (key, val) -> val + 1 );
+				}
+			}
+		}
 	}
 	
 	private static void displayResult(Map<String, Integer> combinations) {
@@ -132,6 +195,7 @@ public class Parte3 {
 		int combos = combinations.get(COMBINATIONS_STR);
 		
 		for (String key : combinations.keySet()) {
+			if (key.equals(COMBINATIONS_STR)) { continue; }
 			out += key + ": " + combinations.get(key) + "/" + combos + "\n";
 		}
 		
