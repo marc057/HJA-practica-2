@@ -280,15 +280,6 @@ public class LabelPanel extends JPanel {
 		return new String(carr);
 	}
 	
-	public Integer getSelectedPercentage(int percentage) {//Devuelve el numero de manos que hay que mantener seleccionadas
-		
-		double d = 169  * ((double) percentage) / 100;
-		
-		int num  = (int)Math.round(d);
-		
-		return num;
-	}
-	
 	public void redrawSk(int n) { 
 	//Mira todas las manos, si estan seleccionadas y si deberian seguir estandolo, si no las quita de select y si deberian estarlo las vuelve a poner
 		List<Double> list = Sklansky.matrixToList();
