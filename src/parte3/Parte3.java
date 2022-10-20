@@ -147,15 +147,13 @@ public class Parte3 {
 		
 		Hand hand = evaluateHand(currList);
 		String handName = hand.getName();
-		combinations.computeIfPresent(COMBINATIONS_STR, (key, val) -> val + 1);
 		
-		if (!handName.equals("pair")) {
-			combinations.putIfAbsent(handName, 0);
-			combinations.computeIfPresent(handName, (key, val) -> val + 1 );
+		if (!handName.equals(Hand.Pair)) {
+			increase(combinations, handName);
 		}
 		else {
 			HandPair pairHand = (HandPair) hand;
-			int pairNum = pairHand.getPairNum();
+			int pairNum = pairHand.getNumber();
 			
 			boolean isPocket = true;
 			for (Card c : fromPlayer) {
@@ -165,26 +163,21 @@ public class Parte3 {
 			//Es de pocket?
 			if (fromPlayer.size() == 2 && isPocket) {
 				if (pairNum > fromBoard.get(0).number) { //Es overpair?
-					combinations.putIfAbsent("Overpair", 0);
-					combinations.computeIfPresent("Overpair", (key, val) -> val + 1 );
+					increase(combinations, HandPair.Overpair);
 				}
 				else {//Es pocket pair below top pair
-					combinations.putIfAbsent("Pocket pair below top pair", 0);
-					combinations.computeIfPresent("Pocket pair below top pair", (key, val) -> val + 1 );
+					increase(combinations, HandPair.PocketBelow);
 				}
 			}
 			else { // No es pocket:
 				if (fromBoard.get(0).number == pairNum) {//Es top pair?
-					combinations.putIfAbsent("Top pair", 0);
-					combinations.computeIfPresent("Top pair", (key, val) -> val + 1 );
+					increase(combinations, HandPair.TopPair);
 				}
 				else if (fromBoard.get(1).number == pairNum) { //Es middle pair
-					combinations.putIfAbsent("Middle pair", 0);
-					combinations.computeIfPresent("Middle pair", (key, val) -> val + 1 );
+					increase(combinations, HandPair.MiddlePair);
 				}
 				else { // Weak pair
-					combinations.putIfAbsent("Weak pair", 0);
-					combinations.computeIfPresent("Weak pair", (key, val) -> val + 1 );
+					increase(combinations, HandPair.WeakPair);
 				}
 			}
 		}
@@ -200,5 +193,77 @@ public class Parte3 {
 		}
 		
 		System.out.print(out);
+	}
+	
+	private static void increase(Map<String, Integer> combinations, String name) {
+		combinations.putIfAbsent(name, 0);
+		combinations.compute(name, (key, val) -> val + 1);
+		
+		combinations.putIfAbsent(COMBINATIONS_STR, 0);
+		combinations.compute(COMBINATIONS_STR, (key, val) -> val + 1);
+	}
+	
+	private static Hand evaluateHand(List<Card> cards) {
+		cards.sort(null);
+		
+		//Precalculations:----------------------------------------------
+		int size = cards.size();
+		
+		//Color precalculation:.................................
+		boolean hasColor = true;
+		int colorNum = cards.get(0).color;
+		
+		for (int i = 1; i < size; i++) {
+			if (colorNum != cards.get(i).color) { hasColor = false; break; }
+		}
+		
+		//Stair precalculation:.................................
+		boolean hasStair = true;
+		int firstNum = cards.get(0).number;
+		for (int i = 1; i < size; i++) {
+			if (cards.get(i-1).number - cards.get(i).number != 1) { hasStair = false; break; }
+		}
+		//Edge case: Ace is lowest number in stair
+		if (!hasStair && firstNum == 14 && (cards.get(size-1).number == 2)) {
+			hasStair = true;
+			for (int i = 2; i < size; i++) {
+				if (cards.get(i-1).number - cards.get(i).number != 1) { hasStair = false; break; }
+			}
+		}
+		
+		//N of a kind precalculation:.................................
+		int longestSet = 1;
+		boolean hasTwoPair = false;
+		int currentSet = 1;
+		for (int i = 1; i < size; i++) {
+			if (cards.get(i-1).number == cards.get(i).number) {
+				if (longestSet >= 2 && currentSet < 2) { hasTwoPair = true; }
+				currentSet++;
+				if (longestSet < currentSet) { longestSet = currentSet; }
+			}
+			else {
+				currentSet = 1;
+			}
+		}
+		
+		//Determine result:..............................................
+		//Straight flush:
+		if (hasColor && hasStair) { return new Hand(Hand.StraightFlush); }
+		//Poker:
+		if (longestSet == 4) { return new Hand(Hand.Poker); }
+		//Full house:
+		if (longestSet == 3 && hasTwoPair) { return new Hand(Hand.FullHouse); }
+		//Flush:
+		if (hasColor) { return new Hand(Hand.Flush); }
+		//Straight:
+		if (hasStair) { return new Hand(Hand.Straight); }
+		//Trio:
+		if (longestSet == 3) { return new Hand(Hand.Trio); }
+		//Two pair:
+		if (hasTwoPair) { return new Hand(Hand.TwoPair); }
+		//Pair:
+		if (longestSet == 2) { return new Hand(Hand.Pair); }
+		//High card:
+		return new Hand(Hand.HighCard);
 	}
 }
