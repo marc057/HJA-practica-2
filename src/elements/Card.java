@@ -1,16 +1,20 @@
-package parte3;
+package elements;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class Card implements Comparable<Card>{
-	//Constants:----------------------------
-	public static final List<Character> colorChars = Arrays.asList('h', 'd', 's', 'c');
-	
+import Miscelaneous.Constants;
+
+public class Card implements Comparable<Card>{	
 	//Attributes:-------------------------
 	int number;
 	int color;
 	
+	//Getters:---------------------------------------
+	public final int getNumber() { return number; }
+	public final int getColor() { return color; }
+	
+	//Constructors:-----------------------------------
 	public Card(String input) {
 		number = toNumber(input.charAt(0));
 		color = toColor(input.charAt(1));
@@ -23,18 +27,11 @@ public class Card implements Comparable<Card>{
 	
 	//Parse methods:--------------------------------------
 	private static int toNumber(char numberChar) {
-		switch(numberChar) {
-			case 'A': return 14;
-			case 'K': return 13;
-			case 'Q': return 12;
-			case 'J': return 11;
-			case 'T': return 10;
-			default:  return numberChar - '0';
-		}
+		return Constants.CardNumbers.indexOf(numberChar);
 	}
 	
 	private static int toColor(char colorChar) {
-		return colorChars.indexOf(colorChar);
+		return Constants.CardColors.indexOf(colorChar);
 	}
 
 	@Override

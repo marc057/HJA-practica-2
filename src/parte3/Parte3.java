@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.Map;
 
 import GUI.LabelButton;
+import elements.Card;
+import elements.Hand;
+import elements.HandPair;
 
 public class Parte3 {
 	
@@ -157,12 +160,12 @@ public class Parte3 {
 			
 			boolean isPocket = true;
 			for (Card c : fromPlayer) {
-				if (c.number != pairNum) { isPocket = false; break; }
+				if (c.getNumber() != pairNum) { isPocket = false; break; }
 			}
 			
 			//Es de pocket?
 			if (fromPlayer.size() == 2 && isPocket) {
-				if (pairNum > fromBoard.get(0).number) { //Es overpair?
+				if (pairNum > fromBoard.get(0).getNumber()) { //Es overpair?
 					increase(combinations, HandPair.Overpair);
 				}
 				else {//Es pocket pair below top pair
@@ -170,10 +173,10 @@ public class Parte3 {
 				}
 			}
 			else { // No es pocket:
-				if (fromBoard.get(0).number == pairNum) {//Es top pair?
+				if (fromBoard.get(0).getNumber() == pairNum) {//Es top pair?
 					increase(combinations, HandPair.TopPair);
 				}
-				else if (fromBoard.get(1).number == pairNum) { //Es middle pair
+				else if (fromBoard.get(1).getNumber() == pairNum) { //Es middle pair
 					increase(combinations, HandPair.MiddlePair);
 				}
 				else { // Weak pair
@@ -211,23 +214,23 @@ public class Parte3 {
 		
 		//Color precalculation:.................................
 		boolean hasColor = true;
-		int colorNum = cards.get(0).color;
+		int colorNum = cards.get(0).getColor();
 		
 		for (int i = 1; i < size; i++) {
-			if (colorNum != cards.get(i).color) { hasColor = false; break; }
+			if (colorNum != cards.get(i).getColor()) { hasColor = false; break; }
 		}
 		
 		//Stair precalculation:.................................
 		boolean hasStair = true;
-		int firstNum = cards.get(0).number;
+		int firstNum = cards.get(0).getNumber();
 		for (int i = 1; i < size; i++) {
-			if (cards.get(i-1).number - cards.get(i).number != 1) { hasStair = false; break; }
+			if (cards.get(i-1).getNumber() - cards.get(i).getNumber() != 1) { hasStair = false; break; }
 		}
 		//Edge case: Ace is lowest number in stair
-		if (!hasStair && firstNum == 14 && (cards.get(size-1).number == 2)) {
+		if (!hasStair && firstNum == 14 && (cards.get(size-1).getNumber() == 2)) {
 			hasStair = true;
 			for (int i = 2; i < size; i++) {
-				if (cards.get(i-1).number - cards.get(i).number != 1) { hasStair = false; break; }
+				if (cards.get(i-1).getNumber() - cards.get(i).getNumber() != 1) { hasStair = false; break; }
 			}
 		}
 		
@@ -236,7 +239,7 @@ public class Parte3 {
 		boolean hasTwoPair = false;
 		int currentSet = 1;
 		for (int i = 1; i < size; i++) {
-			if (cards.get(i-1).number == cards.get(i).number) {
+			if (cards.get(i-1).getNumber() == cards.get(i).getNumber()) {
 				if (longestSet >= 2 && currentSet < 2) { hasTwoPair = true; }
 				currentSet++;
 				if (longestSet < currentSet) { longestSet = currentSet; }

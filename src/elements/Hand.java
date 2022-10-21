@@ -1,4 +1,4 @@
-package parte3;
+package elements;
 
 public class Hand {
 	//Constants:------------------------------------------------------------------
