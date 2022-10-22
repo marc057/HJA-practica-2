@@ -13,22 +13,27 @@ public class Launcher {
 		
 		public static void main(String[] args) {
 		
-		JFrame frame = new JFrame("Frame name");
+		JFrame frame = new JFrame("Hand Range Selector");
 		frame.setSize(new Dimension(800, 800));
 		
 		// MainPanel
 		JPanel mainPanel = new JPanel();
 		mainPanel.setLayout(new BorderLayout());
 		
-		// Panel containing the textfield, print button, ranking selector and reset
+		// Panel containing the textfield, print button, and reset
+		JPanel northPanel = new JPanel();
+		northPanel.setLayout(new FlowLayout());
+		mainPanel.add(northPanel, BorderLayout.PAGE_START);
+		
+		// Panel containing ranking selector 
 		JPanel southPanel = new JPanel();
 		southPanel.setLayout(new FlowLayout());
 		mainPanel.add(southPanel, BorderLayout.PAGE_END);
 		
 		// TextField
 		JTextField textField = new JTextField();
-		textField.setPreferredSize(new Dimension(120, 30));
-		southPanel.add(textField);
+		textField.setPreferredSize(new Dimension(600, 30));
+		northPanel.add(textField);
 		
 		// Panel containing the label matrix
 		LabelPanel labelPanel = new LabelPanel(textField);
@@ -55,20 +60,21 @@ public class Launcher {
 				labelPerc.setText(String.format("%.1f", perc) + "%");
 				sliderPrintChange = false;
 				
-			} catch (Exception e1) {
-				e1.printStackTrace();
+			} catch (Exception exc) {
+				JOptionPane.showMessageDialog(frame, exc.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
 			}
 		});
-		southPanel.add(printRangeButton);
+		northPanel.add(printRangeButton);
 		
 		// Reset Button
 		JButton resetButton = new JButton("RESET");
 		resetButton.addActionListener( e -> {
 			labelPanel.reset();
+			textField.setText("");
 			slider.setValue(0); //Para que cuando se cambia el rango vuelva a estar en 0%
 			
 		});
-		southPanel.add(resetButton);
+		northPanel.add(resetButton);
 		
 		
 		//Slider
@@ -102,6 +108,7 @@ public class Launcher {
 				double perc = slider.getValue() / 1.69;
 				labelPerc.setText(String.format("%.1f", perc) + "%");
 				labelPanel.redrawSk(slider.getValue()); //Deselecciona las manos que no sirven
+				textField.setText(labelPanel.textRange()); // Actualiza el cuadro de texto
 				}
 			}
 	    });

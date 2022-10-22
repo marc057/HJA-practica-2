@@ -56,16 +56,10 @@ public class LabelPanel extends JPanel {
             	LabelButton target = (LabelButton) e.getSource();
             	target.toggleSelect();
             	
-            	textRange();
+            	textField.setText(textRange());
             }
         }
     };
-    
-    public void textRange() {
-    	textRangeEqual();
-    	textRangeSuited();
-    	textRangeOffsuited();
-    }
 
 	public void reset() {
 		for (int i = 0; i < 13; i++) {
@@ -86,20 +80,56 @@ public class LabelPanel extends JPanel {
 		
 		if (target.getSelected() != value) { target.toggleSelect(); }
 	}
+	    
+    public String textRange() {
+    	String rng = "";
+    	String rEqual = textRangeEqual();
+    	String rSuited = textRangeSuited();
+    	String rOffSuited = textRangeOffsuited();
+    	
+    	rng += rEqual;
+    	if (rEqual.length() > 0 &&
+    		(rSuited.length() > 0 || rOffSuited.length() > 0))
+    		rng += ",";
+    	rng += rSuited;
+    	if (rSuited.length() > 0 && rOffSuited.length() > 0)
+    		rng += ",";
+    	rng += rOffSuited;
+    	
+		return rng;
+    }
 	
-	private String printRangeLine(int m1, int m2) {
+	private String printRangeLineEqual(int m1, int m2) {
 		if (m1 == -1)
 			return "";
-		if (m2 == -1) {
+		if (m2 == -1)
 			return lmatrix[m1][m1].getText();
-		}
-		return "";
+		if (m2 == 0)
+			return lmatrix[m1][m1].getText() + "+";
+		return lmatrix[m2][m2].getText() + "-" + lmatrix[m1][m1].getText();
 	}
 	
-	private void printRangeLine(int[] m1, int[] m2) {
+	private String printRangeLineSuited(int m1, int m2, int row) {
+		if (m1 == -1)
+			return "";
+		if (m2 == -1) 
+			return lmatrix[row][m1].getText();
+		if (m2 == row + 1)
+			return lmatrix[row][m1].getText() + "+";
+		return lmatrix[row][m2].getText() + "-" + lmatrix[row][m1].getText();
 	}
 	
-	private void textRangeEqual() {
+	private String printRangeLineOffSuited(int m1, int m2, int column) {
+		if (m1 == -1)
+			return "";
+		if (m2 == -1) 
+			return lmatrix[m1][column].getText();
+		if (m2 == column + 1)
+			return lmatrix[m1][column].getText() + "+";
+		return lmatrix[m2][column].getText() + "-" + lmatrix[m1][column].getText();
+	}
+	
+	private String textRangeEqual() {
 		int marker1 = -1;
 		int marker2 = -1;
 		String rng = "";
@@ -111,23 +141,64 @@ public class LabelPanel extends JPanel {
 				else
 					marker2 = i;
 			}
-			else {
-				rng += "," + printRangeLine(marker1, marker2);
+			if (i == 0 || !lmatrix[i][i].getSelected()) {
+				rng += (rng != "" && marker1 != -1 ? "," : "");
+				rng += printRangeLineEqual(marker1, marker2);
 				marker1 = -1;
 				marker2 = -1;
 			}
 		}
-		textField.setText(rng);
+		return (rng);
 	}
 
-	private void textRangeSuited() {
-		// TODO Auto-generated method stub
+	private String textRangeSuited() {
+		int marker1 = -1;
+		int marker2 = -1;
+		String rng = "";
 		
+		for (int i = 11; i >= 0; i--) {
+			for (int j = 12; j > i; j--) {
+				if (lmatrix[i][j].getSelected()) {
+					if (marker1 == -1)
+						marker1 = j;
+					else
+						marker2 = j;
+				}
+				if (j == i + 1 || !lmatrix[i][j].getSelected()) {
+					rng += (rng != "" && marker1 != -1 ? "," : "");
+					rng += printRangeLineSuited(marker1, marker2, i);
+					marker1 = -1;
+					marker2 = -1;
+				}
+			}
+		}
+		
+		return rng;
 	}
 
-	private void textRangeOffsuited() {
-		// TODO Auto-generated method stub
+	private String textRangeOffsuited() {
+		int marker1 = -1;
+		int marker2 = -1;
+		String rng = "";
 		
+		for (int i = 11; i >= 0; i--) {
+			for (int j = 12; j > i; j--) {
+				if (lmatrix[j][i].getSelected()) {
+					if (marker1 == -1)
+						marker1 = j;
+					else
+						marker2 = j;
+				}
+				if (j == i + 1 || !lmatrix[j][i].getSelected()) {
+					rng += (rng != "" && marker1 != -1 ? "," : "");
+					rng += printRangeLineOffSuited(marker1, marker2, i);
+					marker1 = -1;
+					marker2 = -1;
+				}
+			}
+		}
+		
+		return rng;
 	}
 	
 	public void paintRange(String range) throws Exception {
@@ -196,7 +267,7 @@ public class LabelPanel extends JPanel {
 		List<String> pairs = Arrays.asList(pair.split("-"));
 		int pos1[];
 		int pos2[];
-		int tmp = 0;
+		int tmp = -1;
 		
 		if (pairs.size() != 2) {
 			throw new Exception("Paint bewtween exception: Number of args incorrect");
@@ -204,8 +275,23 @@ public class LabelPanel extends JPanel {
 		pos1 = stringToPos(pairs.get(0));
 		pos2 = stringToPos(pairs.get(1));
 		
+		// If equal
+		if (pos1[0] == pos1[1]) {
+			// We dont need to check if they are aligned.
+			// We swap the elements if the first pair is lower on the table
+			if (pos1[0] > pos2[0]) {
+				tmp = pos1[0];
+				pos1[0] = pos2[0];
+				pos2[0] = tmp;
+			}
+			
+			for (int i = pos1[0]; i <= pos2[0]; i++) {
+				setSelect(i, i, true);
+			}
+		}
+		
 		// If suited
-		if (pos1[0] < pos1[1]) {
+		else if (pos1[0] < pos1[1]) {
 			
 			// If not aligned, throw exception
 			if (pos2[0] != pos1[0] || pos2[0] > pos2[1])
@@ -225,7 +311,7 @@ public class LabelPanel extends JPanel {
 		}
 		
 		// If off-suited
-		if (pos1[0] > pos1[1]) {
+		else if (pos1[0] > pos1[1]) {
 			
 			// If not aligned, throw exception
 			if (pos2[1] != pos1[1] || pos2[0] < pos2[1])
