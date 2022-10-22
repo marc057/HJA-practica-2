@@ -142,7 +142,7 @@ public class LabelPanel extends JPanel {
 					marker2 = i;
 			}
 			if (i == 0 || !lmatrix[i][i].getSelected()) {
-				rng += (rng != "" ? "," : "");
+				rng += (rng != "" && marker1 != -1 ? "," : "");
 				rng += printRangeLineEqual(marker1, marker2);
 				marker1 = -1;
 				marker2 = -1;
@@ -165,7 +165,7 @@ public class LabelPanel extends JPanel {
 						marker2 = j;
 				}
 				if (j == i + 1 || !lmatrix[i][j].getSelected()) {
-					rng += (rng != "" ? "," : "");
+					rng += (rng != "" && marker1 != -1 ? "," : "");
 					rng += printRangeLineSuited(marker1, marker2, i);
 					marker1 = -1;
 					marker2 = -1;
@@ -190,7 +190,7 @@ public class LabelPanel extends JPanel {
 						marker2 = j;
 				}
 				if (j == i + 1 || !lmatrix[j][i].getSelected()) {
-					rng += (rng != "" ? "," : "");
+					rng += (rng != "" && marker1 != -1 ? "," : "");
 					rng += printRangeLineOffSuited(marker1, marker2, i);
 					marker1 = -1;
 					marker2 = -1;
