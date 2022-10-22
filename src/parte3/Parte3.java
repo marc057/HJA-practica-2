@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import GUI.LabelButton;
+import Miscelaneous.Constants;
 import elements.Card;
 import elements.Hand;
 import elements.HandPair;
@@ -120,12 +121,12 @@ public class Parte3 {
 		
 		List<List<Card>> output = new ArrayList<>();
 		
-		for(Character cA : Card.colorChars) {
+		for(Character cA : Constants.CardColors) {
 			Card a = new Card(nA, cA);
 			
 			if (boardCards.contains(a)) { continue; }
 			
-			for(Character cB : Card.colorChars) {
+			for(Character cB : Constants.CardColors) {
 				if (sameColor == (cA.equals(cB))) { // Discard when not in scope of this box
 					Card b = new Card(nB, cB);
 					

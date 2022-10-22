@@ -13,7 +13,7 @@ public abstract class Ranking {
 	
 	protected abstract void initMatrix();
 	
-	public static List<Double> matrixToList(){
+	public List<Double> matrixToList(){
 		List<Double> list = new ArrayList<>();
 		
 		for(int i = 0; i < 13; i++) {
