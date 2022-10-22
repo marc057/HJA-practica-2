@@ -5,8 +5,6 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import Rankings.Sklansky;
-
 public class Launcher {
 	
 		private static boolean sliderPrintChange = false;

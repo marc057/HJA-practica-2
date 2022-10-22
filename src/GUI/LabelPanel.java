@@ -368,7 +368,7 @@ public class LabelPanel extends JPanel {
 	
 	public void redrawSk(int n) { 
 	//Mira todas las manos, si estan seleccionadas y si deberian seguir estandolo, si no las quita de select y si deberian estarlo las vuelve a poner
-		List<Double> list = Sklansky.matrixToList();
+		List<Double> list = matrixSk.matrixToList();
 		
 		Collections.sort(list);
 		Collections.reverse(list);

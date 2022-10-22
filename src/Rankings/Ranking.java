@@ -5,7 +5,7 @@ import java.util.List;
 
 public abstract class Ranking {
 	private static final int NumLabels = 13*13;
-	static double[][] matrix = new double[13][13];
+	protected double[][] matrix = new double[13][13];
 	
 	protected Ranking() {
 		initMatrix();
@@ -13,7 +13,7 @@ public abstract class Ranking {
 	
 	protected abstract void initMatrix();
 	
-	public static List<Double> matrixToList(){
+	public List<Double> matrixToList(){
 		List<Double> list = new ArrayList<>();
 		
 		for(int i = 0; i < 13; i++) {
