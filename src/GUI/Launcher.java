@@ -14,12 +14,12 @@ public class Launcher {
 	
 	public static void main(String[] args) {
 		
-		JFrame frame = new JFrame("Hand Range Selector");
-		frame.setSize(new Dimension(800, 800));
+		JFrame frame = new JFrame("FakeStove");
+		frame.setSize(new Dimension(1000, 800));
 		
 		// MainPanel
 		JPanel mainPanel = new JPanel();
-		mainPanel.setLayout(new BorderLayout());
+		mainPanel.setLayout(new BorderLayout(10, 10));
 		
 		// Panel containing the textfield, print button, and reset
 		JPanel northPanel = new JPanel();
@@ -45,7 +45,9 @@ public class Launcher {
 		LabelPanel labelPanel = new LabelPanel(textField);
 		mainPanel.add(labelPanel, BorderLayout.CENTER);
 		
-		
+		//Board panel
+		BoardPanel boardPanel = new BoardPanel();
+		mainPanel.add(boardPanel, BorderLayout.EAST);
 		
 		// Print Button
 		JButton printRangeButton = new JButton("PRINT");
@@ -71,6 +73,7 @@ public class Launcher {
 		JButton resetButton = new JButton("RESET");
 		resetButton.addActionListener( e -> {
 			labelPanel.reset();
+			boardPanel.reset();
 			textField.setText("");
 			slider.setValue(0); //Para que cuando se cambia el rango vuelva a estar en 0%
 			

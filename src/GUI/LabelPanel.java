@@ -1,5 +1,6 @@
 package GUI;
 
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -7,9 +8,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import javax.swing.*;
+
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 import Rankings.Sklansky;
+import aware.LabelAware;
 
 public class LabelPanel extends JPanel implements LabelAware {
 	
@@ -32,6 +36,8 @@ public class LabelPanel extends JPanel implements LabelAware {
 	//Constructor:------------------------------------------------------------------
 	public LabelPanel(JTextField textField) {
 	    this.setLayout(new GridLayout(13, 13));
+	    this.setSize(new Dimension(700, 700));
+	    this.setPreferredSize(new Dimension(700, 700));
 	    this.textField = textField;
 	    initLabelMatrix();
 		this.setVisible(true);
@@ -386,5 +392,15 @@ public class LabelPanel extends JPanel implements LabelAware {
 		 que sea mas exacto cuando se quitan (en vez de round otra cosa)
 		 
 		 */
+	}
+	@Override
+	public void sendSelectionChanged() {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void receiveSelectionChanged() {
+		// TODO Auto-generated method stub
+		
 	}
 }

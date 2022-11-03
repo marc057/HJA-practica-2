@@ -9,4 +9,4 @@ public interface LabelAware {
 	}
 	public void sendSelectionChanged();
 	public void receiveSelectionChanged();
-}
+}                                      

@@ -13,4 +13,15 @@ public class LabelAwareInfo {
 	
 	
 	private static List<LabelAware> observers = new ArrayList<>();
+	
+	public void addObserver(LabelAware observer) {
+		observers.add(observer);
+	}
+	
+
+
+	LabelAwareInfo.getInstance().addObserver(observer);
+}
+public default void addObservable(LabelAware observable) {
+	LabelAwareInfo.getInstance().addObservable(observable);
 }

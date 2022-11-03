@@ -7,9 +7,9 @@ import Miscelaneous.Constants;
 @SuppressWarnings("serial")
 public class BoardButton extends MyButton {
 	//Constants:------------------------------------------------------------------
-	private static final Color UnselectedSpades = new Color(191, 205, 211); //Bluish grey
-	private static final Color UnselectedHearts = new Color(212, 131, 126); //Red
-	private static final Color UnselectedClubs = new Color(186, 255, 152); //Green
+	private static final Color UnselectedSpades = new Color(111, 125, 131); //Bluish grey
+	private static final Color UnselectedHearts = new Color(210, 80, 100); //Red
+	private static final Color UnselectedClubs = new Color(156, 255, 122); //Green
 	private static final Color UnselectedDiamonds = new Color(0,191,255); //Blue
 	private static final Color Selected = new Color(252, 255, 0); //Yellow
 	
@@ -41,7 +41,7 @@ public class BoardButton extends MyButton {
 			this.setBackground(Selected);
 		}
 		else {
-			switch(i) {
+			switch(j) {
 			case 0: //Hearts
 				this.setBackground(UnselectedHearts); break;
 			case 1: //Diamonds

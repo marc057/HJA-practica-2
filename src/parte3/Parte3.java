@@ -16,7 +16,7 @@ public class Parte3 {
 	
 	private static final String COMBINATIONS_STR = "combinations";
 	
-	public static void solve(LabelButton[][] lmatrix, String board) {
+	public static Map<String, List<String>> solve(LabelButton[][] lmatrix, String board) {
 		//Extract selected range:
 		List<String> boxes = new ArrayList<>();
 		for (int i = 0; i < 13; i++) {
@@ -39,8 +39,7 @@ public class Parte3 {
 		}
 		
 		//Form all possible hands that include at least 1 card from pair
-		Map<String, Integer> combinations = new HashMap<>();
-		combinations.put(COMBINATIONS_STR, 0);
+		Map<String, List<String>> combinations = new HashMap<>();
 		int size = boardCards.size();
 		List<Card> fromPlayer;
 		List<Card> fromBoard; 
@@ -111,7 +110,7 @@ public class Parte3 {
 				break;
 			}
 		}
-		displayResult(combinations);
+		return combinations;
 	}
 	
 	private static List<List<Card>> boxToCards(String box, List<Card> boardCards) {
@@ -140,7 +139,7 @@ public class Parte3 {
 		return output;
 	}
 	
-	private static void processHand(Map<String, Integer> combinations, List<Card> fromPlayer, List<Card> fromBoard) {
+	private static void processHand(Map<String, List<String>> combinations, List<Card> fromPlayer, List<Card> fromBoard) {
 		fromPlayer.sort(null);
 		fromBoard.sort(null);
 		
@@ -152,8 +151,13 @@ public class Parte3 {
 		Hand hand = evaluateHand(currList);
 		String handName = hand.getName();
 		
+		String playerHand = "";
+		for (Card pHand : fromPlayer) {
+			playerHand += pHand.toString();
+		}
+		
 		if (!handName.equals(Hand.Pair)) {
-			increase(combinations, handName);
+			increase(combinations, handName, playerHand);
 		}
 		else {
 			HandPair pairHand = (HandPair) hand;
@@ -167,29 +171,29 @@ public class Parte3 {
 			//Es de pocket?
 			if (fromPlayer.size() == 2 && isPocket) {
 				if (pairNum > fromBoard.get(0).getNumber()) { //Es overpair?
-					increase(combinations, HandPair.Overpair);
+					increase(combinations, HandPair.Overpair, playerHand);
 				}
 				else {//Es pocket pair below top pair
-					increase(combinations, HandPair.PocketBelow);
+					increase(combinations, HandPair.PocketBelow, playerHand);
 				}
 			}
 			else { // No es pocket:
 				if (fromBoard.get(0).getNumber() == pairNum) {//Es top pair?
-					increase(combinations, HandPair.TopPair);
+					increase(combinations, HandPair.TopPair, playerHand);
 				}
 				else if (fromBoard.get(1).getNumber() == pairNum) { //Es middle pair
-					increase(combinations, HandPair.MiddlePair);
+					increase(combinations, HandPair.MiddlePair, playerHand);
 				}
 				else { // Weak pair
-					increase(combinations, HandPair.WeakPair);
+					increase(combinations, HandPair.WeakPair, playerHand);
 				}
 			}
 		}
 	}
 	
-	private static void displayResult(Map<String, Integer> combinations) {
+	private static void displayResult(Map<String, List<String>> combinations) {
 		String out = "";
-		int combos = combinations.get(COMBINATIONS_STR);
+		int combos = combinations.get(COMBINATIONS_STR).size();
 		
 		for (String key : combinations.keySet()) {
 			if (key.equals(COMBINATIONS_STR)) { continue; }
@@ -199,12 +203,16 @@ public class Parte3 {
 		System.out.print(out);
 	}
 	
-	private static void increase(Map<String, Integer> combinations, String name) {
-		combinations.putIfAbsent(name, 0);
-		combinations.compute(name, (key, val) -> val + 1);
+	private static void increase(Map<String, List<String>> combinations, String name, String playerHand) {
+		combinations.putIfAbsent(name, new ArrayList<>());
+		List<String> listActual = combinations.get(name);
+		listActual.add(playerHand);
+		combinations.put(name, listActual);
 		
-		combinations.putIfAbsent(COMBINATIONS_STR, 0);
-		combinations.compute(COMBINATIONS_STR, (key, val) -> val + 1);
+		combinations.putIfAbsent(COMBINATIONS_STR, new ArrayList<>());
+		listActual = combinations.get(COMBINATIONS_STR);
+		listActual.add(playerHand);
+		combinations.put(name, listActual);
 	}
 	
 	private static Hand evaluateHand(List<Card> cards) {
