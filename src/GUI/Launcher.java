@@ -7,9 +7,12 @@ import javax.swing.event.ChangeListener;
 
 public class Launcher {
 	
-		private static boolean sliderPrintChange = false;
-		
-		public static void main(String[] args) {
+	private static Boolean sliderPrintChange = false;
+	private static JSlider slider;
+	private static JLabel labelPerc;
+	
+	
+	public static void main(String[] args) {
 		
 		JFrame frame = new JFrame("Hand Range Selector");
 		frame.setSize(new Dimension(800, 800));
@@ -32,15 +35,17 @@ public class Launcher {
 		JTextField textField = new JTextField();
 		textField.setPreferredSize(new Dimension(600, 30));
 		northPanel.add(textField);
-		
+
+		//Slider solo declarado
+		slider = new JSlider(0,169,0);//Min 0 Max 169 empieza en 0
+		//Label con el porcentaje del slider
+		labelPerc = new JLabel();
+
 		// Panel containing the label matrix
 		LabelPanel labelPanel = new LabelPanel(textField);
 		mainPanel.add(labelPanel, BorderLayout.CENTER);
 		
-		//Slider solo declarado
-		JSlider slider = new JSlider(0,169,0);//Min 0 Max 169 empieza en 0
-		//Label con el porcentaje del slider
-		JLabel labelPerc = new JLabel();
+		
 		
 		// Print Button
 		JButton printRangeButton = new JButton("PRINT");
@@ -50,18 +55,16 @@ public class Launcher {
 				labelPanel.reset();
 				labelPanel.paintRange(textField.getText().replaceAll("\\s+", ""));
 				
-				int newSliderValue = LabelButton.getNumSelected();
+				int newSliderValue = LabelButton.getNumSelectedS();
 				
-				sliderPrintChange = true;
-				slider.setValue(newSliderValue);
-				double perc = newSliderValue / 1.69;
-				labelPerc.setText(String.format("%.1f", perc) + "%");
-				sliderPrintChange = false;
+				setValueExternal(newSliderValue);
 				
 			} catch (Exception exc) {
 				JOptionPane.showMessageDialog(frame, exc.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
 			}
 		});
+
+		
 		northPanel.add(printRangeButton);
 		
 		// Reset Button
@@ -120,5 +123,13 @@ public class Launcher {
 		mainPanel.setVisible(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
+	}
+		
+	public static void setValueExternal(int newSliderValue) {
+		sliderPrintChange = true; //Para que no se raye al cambiar el valor de slider sin moverlo
+		slider.setValue(newSliderValue);
+		double perc = newSliderValue / 1.69;
+		labelPerc.setText(String.format("%.1f", perc) + "%");
+		sliderPrintChange = false;
 	}
 }

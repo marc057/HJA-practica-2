@@ -1,10 +1,10 @@
 package GUI;
 
 import java.awt.Color;
-import javax.swing.JButton;
-import javax.swing.border.LineBorder;
+import java.awt.event.ActionListener;
 
-public class LabelButton extends JButton {
+@SuppressWarnings("serial")
+public class LabelButton extends MyButton {
 	
 	//Constants:------------------------------------------------------------------
 	private static final Color UnselectedOffsuit = new Color(191, 205, 211); //Bluish grey
@@ -13,29 +13,20 @@ public class LabelButton extends JButton {
 	private static final Color Selected = new Color(252, 255, 0); //Yellow
 	
 	//Attributes:-----------------------------------------------------------------
-	private int i;
-	private int j;
-	private boolean selected;
 	private static int numSelected = 0;
 	
-	//Getters:---------------------------------------------------------------------
-	public int getI() { return i; }
-	public int getJ() { return j; }
-	public boolean getSelected() { return selected; }
-	public static int getNumSelected() { return numSelected; }
+	//Getters:-----------------------------------------------------------------------
+	@Override
+	public int getNumSelected() { return getNumSelectedS(); }
+	public static int getNumSelectedS() { return numSelected; }
 	
 	//Constructor:------------------------------------------------------------------
-	public LabelButton(int i, int j) {
-		this.i = i;
-		this.j = j;
-		selected = false;
-		text();
-		color();
-		this.setBorder(new LineBorder(Color.BLACK)); // esto antes llamaba a super, no se por que
+	public LabelButton(int i, int j, ActionListener l) {
+		super(i, j, l);
 	}
 	
 	//Setup:------------------------------------------------------------------------
-	private void text() {
+	protected void initText() {
 		String iStr = LabelPanel.coordToString(i);
 		String jStr = LabelPanel.coordToString(j);
 		String text;
@@ -50,11 +41,12 @@ public class LabelButton extends JButton {
 			text = jStr + iStr + "o";
 		}
 		
-		this.setText(text); // esto antes llamaba a super, no se por que
+		this.setText(text); //De JButton
 	}
 	
 	//Update:------------------------------------------------------------------------
-	private void color() {
+	@Override
+	protected void color() {
 		if (selected) {
 			this.setBackground(Selected);
 		}
@@ -66,10 +58,8 @@ public class LabelButton extends JButton {
 	}
 	
 	//Modify:-------------------------------------------------------------------------
-	public void toggleSelect() {
-		selected = !selected;
-		numSelected += selected ? 1 : -1;
-		color();
+	@Override
+	public void sumNumSelected(int amount) {
+		LabelButton.numSelected += amount;	
 	}
-
 }

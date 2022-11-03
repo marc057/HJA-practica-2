@@ -6,6 +6,7 @@ import javax.swing.JPanel;
 
 import Miscelaneous.Constants;
 
+/*
 public class BoardPanel extends JPanel {
 	//Attributes:----------------------------------------------------
 	private BoardButton[][] boardButtons = new BoardButton[13][4];
@@ -28,3 +29,4 @@ public class BoardPanel extends JPanel {
 		}
 	}
 }
+*/

@@ -11,7 +11,7 @@ import javax.swing.*;
 
 import Rankings.Sklansky;
 
-public class LabelPanel extends JPanel {
+public class LabelPanel extends JPanel implements LabelAware {
 	
 	//Constants:------------------------------------------------------------------
 	private static final List<Character> CardChars = Arrays.asList('A', 'K', 'Q', 'J', 'T', '9', '8', '7', '6', '5', '4', '3', '2');
@@ -23,6 +23,7 @@ public class LabelPanel extends JPanel {
 	
 	private Sklansky matrixSk = new Sklansky(); //Matriz con los valores de el ranking Sklansky
 	
+	//Progressbar
 	
 	//Getters:---------------------------------------------------------------------
 	public static String coordToString(int c) { return String.valueOf(CardChars.get(c)); }
@@ -42,8 +43,7 @@ public class LabelPanel extends JPanel {
 		
 		for (int i = 0; i < 13; i++) {
 			for (int j = 0; j < 13; j++) {
-				lmatrix[i][j] = new LabelButton(i, j);
-				lmatrix[i][j].addActionListener(listener);
+				lmatrix[i][j] = new LabelButton(i, j, listener);
 				this.add(lmatrix[i][j]);
 			}
 		}
@@ -57,6 +57,7 @@ public class LabelPanel extends JPanel {
             	target.toggleSelect();
             	
             	textField.setText(textRange());
+            	Launcher.setValueExternal(LabelButton.getNumSelectedS());
             }
         }
     };
@@ -68,12 +69,6 @@ public class LabelPanel extends JPanel {
 			}
 		}
 	}
-	/*
-	private void toggleSelect(int x, int y) {
-		lmatrix[x][y].toggleSelect();	
-	}
-	Este metodo no esta siendo usado(?)
-	*/ 
 	
 	private void setSelect(int i, int j, boolean value) {
 		LabelButton target = lmatrix[i][j];
@@ -142,7 +137,7 @@ public class LabelPanel extends JPanel {
 					marker2 = i;
 			}
 			if (i == 0 || !lmatrix[i][i].getSelected()) {
-				rng += (rng != "" && marker1 != -1 ? "," : "");
+				rng += (!rng.equals("") && marker1 != -1 ? "," : "");
 				rng += printRangeLineEqual(marker1, marker2);
 				marker1 = -1;
 				marker2 = -1;
@@ -165,7 +160,7 @@ public class LabelPanel extends JPanel {
 						marker2 = j;
 				}
 				if (j == i + 1 || !lmatrix[i][j].getSelected()) {
-					rng += (rng != "" && marker1 != -1 ? "," : "");
+					rng += (!rng.equals("") && marker1 != -1 ? "," : "");
 					rng += printRangeLineSuited(marker1, marker2, i);
 					marker1 = -1;
 					marker2 = -1;
@@ -190,7 +185,7 @@ public class LabelPanel extends JPanel {
 						marker2 = j;
 				}
 				if (j == i + 1 || !lmatrix[j][i].getSelected()) {
-					rng += (rng != "" && marker1 != -1 ? "," : "");
+					rng += (!rng.equals("") && marker1 != -1 ? "," : "");
 					rng += printRangeLineOffSuited(marker1, marker2, i);
 					marker1 = -1;
 					marker2 = -1;
