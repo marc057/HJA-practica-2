@@ -19,14 +19,13 @@ public class ManosPanel extends JPanel implements LabelAware{
             pBar.setValue(map.get(key).size());
             pBar.setStringPainted(true);
             this.add(pBar);
-
             String cards = "";
             for (String card : map.get(key)) {
                 if (!cards.equals("")) { cards += ","; }
                 cards += card;
             }
 
-            JLabel mano = new JLabel(map.get(key).toString());
+            JLabel mano = new JLabel(cards);
             mano.setVisible(true);
             this.add(mano);
             

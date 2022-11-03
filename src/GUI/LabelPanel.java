@@ -79,22 +79,29 @@ public class LabelPanel extends JPanel implements LabelAware {
 	private void setSelect(int i, int j, boolean value) {
 		LabelButton target = lmatrix[i][j];
 		
-		if (target.getSelected() != value) { target.toggleSelect(); }
+		target.setSelect(value);
 	}
 	    
+	//Esto lee la matriz y actualiza el texto del rango corresponde
+	//Lo separa en 3 partes (parejas, suited y offsuited) y luego une las tres partes
+	//Añade comas para separar entre partes cuando son necesarias
     public String textRange() {
     	String rng = "";
     	String rEqual = textRangeEqual();
     	String rSuited = textRangeSuited();
     	String rOffSuited = textRangeOffsuited();
     	
+    
     	rng += rEqual;
-    	if (rEqual.length() > 0 &&
-    		(rSuited.length() > 0 || rOffSuited.length() > 0))
+    	
+    	if (rng.length() > 0 && rSuited.length() > 0)
     		rng += ",";
+    	
     	rng += rSuited;
+    	
     	if (rSuited.length() > 0 && rOffSuited.length() > 0)
     		rng += ",";
+    	
     	rng += rOffSuited;
     	
 		return rng;
