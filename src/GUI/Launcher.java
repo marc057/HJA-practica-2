@@ -15,7 +15,7 @@ public class Launcher {
 	public static void main(String[] args) {
 		
 		JFrame frame = new JFrame("FakeStove");
-		frame.setSize(new Dimension(1000, 800));
+		frame.setSize(new Dimension(1400, 800));
 		
 		// MainPanel
 		JPanel mainPanel = new JPanel();
@@ -43,11 +43,15 @@ public class Launcher {
 
 		// Panel containing the label matrix
 		LabelPanel labelPanel = new LabelPanel(textField);
-		mainPanel.add(labelPanel, BorderLayout.CENTER);
+		mainPanel.add(labelPanel, BorderLayout.WEST);
 		
+		//Manos Panel
+		ManosPanel manosPanel = new ManosPanel();
+		mainPanel.add(manosPanel, BorderLayout.CENTER); //????????????????????????????????
 		//Board panel
-		BoardPanel boardPanel = new BoardPanel();
+		BoardPanel boardPanel = new BoardPanel(labelPanel, manosPanel);
 		mainPanel.add(boardPanel, BorderLayout.EAST);
+		
 		
 		// Print Button
 		JButton printRangeButton = new JButton("PRINT");
@@ -55,11 +59,13 @@ public class Launcher {
 			try {
 				// Pasa la string en el cuadro de texto a la matriz, sin espacios
 				labelPanel.reset();
+				
 				labelPanel.paintRange(textField.getText().replaceAll("\\s+", ""));
 				
 				int newSliderValue = LabelButton.getNumSelectedS();
 				
 				setValueExternal(newSliderValue);
+				
 				
 			} catch (Exception exc) {
 				JOptionPane.showMessageDialog(frame, exc.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
@@ -75,6 +81,7 @@ public class Launcher {
 			labelPanel.reset();
 			boardPanel.reset();
 			textField.setText("");
+			ManosPanel.getInstance().resetManosPanel();
 			slider.setValue(0); //Para que cuando se cambia el rango vuelva a estar en 0%
 			
 		});

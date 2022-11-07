@@ -32,7 +32,7 @@ public class LabelPanel extends JPanel implements LabelAware {
 	//Getters:---------------------------------------------------------------------
 	public static String coordToString(int c) { return String.valueOf(CardChars.get(c)); }
 	public static int charToCoord(char c) { return CardChars.indexOf(c); }
-	
+	public LabelButton[][] getMatrix(){ return lmatrix; }
 	//Constructor:------------------------------------------------------------------
 	public LabelPanel(JTextField textField) {
 	    this.setLayout(new GridLayout(13, 13));
@@ -394,11 +394,6 @@ public class LabelPanel extends JPanel implements LabelAware {
 			}
 		}
 		
-		/*
-		 FALTA:
-		 que sea mas exacto cuando se quitan (en vez de round otra cosa)
-		 
-		 */
 	}
 	@Override
 	public void sendSelectionChanged() {

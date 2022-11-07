@@ -114,23 +114,28 @@ public class Parte3 {
 	}
 	
 	private static List<List<Card>> boxToCards(String box, List<Card> boardCards) {
-		int nA = box.charAt(0);
-		int nB = box.charAt(1);
+		int nA = Constants.CardNumbers.indexOf(box.charAt(0));
+		int nB = Constants.CardNumbers.indexOf(box.charAt(1));
 		boolean sameColor = (nA != nB && box.charAt(2) == 's');
 		
 		List<List<Card>> output = new ArrayList<>();
 		
-		for(Character cA : Constants.CardColors) {
+		for(int i = 0; i < 4; i++) {
+			char cA = Constants.CardColors.get(i);
 			Card a = new Card(nA, cA);
 			
 			if (boardCards.contains(a)) { continue; }
 			
-			for(Character cB : Constants.CardColors) {
-				if (sameColor == (cA.equals(cB))) { // Discard when not in scope of this box
+			for(int j = i; j < 4; j++) {
+				char cB = Constants.CardColors.get(j);
+				if (sameColor == (cA == cB)) { // Discard when not in scope of this box
 					Card b = new Card(nB, cB);
 					
 					if (boardCards.contains(b)) { continue; }
 					
+					if(a.equals(b)) {continue;}
+					
+					if( i == j && nA > nB) { continue; }
 					output.add(Arrays.asList(a, b));
 				} 
 			}
@@ -170,7 +175,7 @@ public class Parte3 {
 			
 			//Es de pocket?
 			if (fromPlayer.size() == 2 && isPocket) {
-				if (pairNum > fromBoard.get(0).getNumber()) { //Es overpair?
+				if (pairNum < fromBoard.get(0).getNumber()) { //Es overpair?
 					increase(combinations, HandPair.Overpair, playerHand);
 				}
 				else {//Es pocket pair below top pair
@@ -181,7 +186,7 @@ public class Parte3 {
 				if (fromBoard.get(0).getNumber() == pairNum) {//Es top pair?
 					increase(combinations, HandPair.TopPair, playerHand);
 				}
-				else if (fromBoard.get(1).getNumber() == pairNum) { //Es middle pair
+				else if (fromBoard.get(1).getNumber() == pairNum) { //Es middle pair!
 					increase(combinations, HandPair.MiddlePair, playerHand);
 				}
 				else { // Weak pair
@@ -205,14 +210,20 @@ public class Parte3 {
 	
 	private static void increase(Map<String, List<String>> combinations, String name, String playerHand) {
 		combinations.putIfAbsent(name, new ArrayList<>());
-		List<String> listActual = combinations.get(name);
-		listActual.add(playerHand);
-		combinations.put(name, listActual);
+		List<String> listActual = new ArrayList<>(combinations.get(name));
+		
+		if(!listActual.contains(playerHand)) {
+			listActual.add(playerHand);
+			combinations.replace(name, listActual);
+		}
 		
 		combinations.putIfAbsent(COMBINATIONS_STR, new ArrayList<>());
-		listActual = combinations.get(COMBINATIONS_STR);
-		listActual.add(playerHand);
-		combinations.put(name, listActual);
+		listActual = new ArrayList<>(combinations.get(COMBINATIONS_STR));
+		
+		if(!listActual.contains(playerHand)) {
+			listActual.add(playerHand);
+			combinations.replace(COMBINATIONS_STR, listActual);
+		}
 	}
 	
 	private static Hand evaluateHand(List<Card> cards) {
@@ -247,11 +258,14 @@ public class Parte3 {
 		int longestSet = 1;
 		boolean hasTwoPair = false;
 		int currentSet = 1;
+		int highestPair = -1;
 		for (int i = 1; i < size; i++) {
 			if (cards.get(i-1).getNumber() == cards.get(i).getNumber()) {
 				if (longestSet >= 2 && currentSet < 2) { hasTwoPair = true; }
 				currentSet++;
 				if (longestSet < currentSet) { longestSet = currentSet; }
+				if(highestPair == -1)
+					highestPair = cards.get(i).getNumber();
 			}
 			else {
 				currentSet = 1;
@@ -274,7 +288,7 @@ public class Parte3 {
 		//Two pair:
 		if (hasTwoPair) { return new Hand(Hand.TwoPair); }
 		//Pair:
-		if (longestSet == 2) { return new Hand(Hand.Pair); }
+		if (longestSet == 2) { return new HandPair(highestPair); }
 		//High card:
 		return new Hand(Hand.HighCard);
 	}

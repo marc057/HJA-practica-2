@@ -33,9 +33,22 @@ public class Card implements Comparable<Card>{
 	private static int toColor(char colorChar) {
 		return Constants.CardColors.indexOf(colorChar);
 	}
-
+	
+	@Override
+	public String toString() {
+		String s = "";
+		s += Constants.CardNumbers.get(number);
+		s += Constants.CardColors.get(color);
+		return s;
+	}
+	
 	@Override
 	public int compareTo(Card other) {
 		return this.number - other.number;
+	}
+	@Override
+	public boolean equals(Object other) {
+		Card otherC = (Card) other;
+		return (this.number == otherC.number && this.color == otherC.color);
 	}
 }
