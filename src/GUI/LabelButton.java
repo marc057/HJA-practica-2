@@ -27,8 +27,8 @@ public class LabelButton extends MyButton {
 	
 	//Setup:------------------------------------------------------------------------
 	protected void initText() {
-		String iStr = LabelPanel.coordToString(i);
-		String jStr = LabelPanel.coordToString(j);
+		String iStr = LabelPanel.numToString(i);
+		String jStr = LabelPanel.numToString(j);
 		String text;
 		
 		if (j >= i) {

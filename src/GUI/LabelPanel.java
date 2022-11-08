@@ -12,33 +12,37 @@ import java.util.List;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import Miscelaneous.Constants;
 import Rankings.Sklansky;
 import aware.LabelAware;
 
 public class LabelPanel extends JPanel implements LabelAware {
 	
-	//Constants:------------------------------------------------------------------
-	private static final List<Character> CardChars = Arrays.asList('A', 'K', 'Q', 'J', 'T', '9', '8', '7', '6', '5', '4', '3', '2');
-	private static final int NumLabels = 13*13;
+	//Singleton:------------------------------------------------------------
+	private static LabelPanel instance = null;
+	
+	public static LabelPanel getInstance() {
+		if (instance == null) {
+			instance = new LabelPanel();
+		}
+		return instance;
+	}
 	
 	//Attributes:-----------------------------------------------------------------
 	private LabelButton[][] lmatrix;
-	private JTextField textField; // Instance of textField, to change the text when a button is pressed
 	
 	private Sklansky matrixSk = new Sklansky(); //Matriz con los valores de el ranking Sklansky
 	
-	//Progressbar
-	
 	//Getters:---------------------------------------------------------------------
-	public static String coordToString(int c) { return String.valueOf(CardChars.get(c)); }
-	public static int charToCoord(char c) { return CardChars.indexOf(c); }
+	public static String numToString(int c) { return String.valueOf(Constants.CardNumbers.get(c)); }
+	public static int charToNum(char c) { return Constants.CardNumbers.indexOf(c); }
 	public LabelButton[][] getMatrix(){ return lmatrix; }
+	
 	//Constructor:------------------------------------------------------------------
-	public LabelPanel(JTextField textField) {
+	public LabelPanel() {
 	    this.setLayout(new GridLayout(13, 13));
 	    this.setSize(new Dimension(700, 700));
 	    this.setPreferredSize(new Dimension(700, 700));
-	    this.textField = textField;
 	    initLabelMatrix();
 		this.setVisible(true);
 	}
@@ -62,7 +66,7 @@ public class LabelPanel extends JPanel implements LabelAware {
             	LabelButton target = (LabelButton) e.getSource();
             	target.toggleSelect();
             	
-            	textField.setText(textRange());
+            	MyRangeText.getInstance().setText(textRange());
             	Launcher.setValueExternal(LabelButton.getNumSelectedS());
             }
         }
@@ -344,21 +348,21 @@ public class LabelPanel extends JPanel implements LabelAware {
 	private int[] stringToPos(String str) {
 		int[] pos = {-1, -1};
 		
-		if (charToCoord(str.charAt(0)) > charToCoord(str.charAt(1)))
+		if (charToNum(str.charAt(0)) > charToNum(str.charAt(1)))
 			str = swapPairString(str);
 		
 		if (str.length() == 3) {
 			if (str.charAt(2) == 's') {
-				pos[0] = charToCoord(str.charAt(0));
-				pos[1] = charToCoord(str.charAt(1));
+				pos[0] = charToNum(str.charAt(0));
+				pos[1] = charToNum(str.charAt(1));
 			}
 			if (str.charAt(2) == 'o') {
-				pos[1] = charToCoord(str.charAt(0));
-				pos[0] = charToCoord(str.charAt(1));
+				pos[1] = charToNum(str.charAt(0));
+				pos[0] = charToNum(str.charAt(1));
 			}
 		}
 		if (str.length() == 2) {
-			pos[0] = charToCoord(str.charAt(0));
+			pos[0] = charToNum(str.charAt(0));
 			pos[1] = pos[0];
 		}
 		return pos;

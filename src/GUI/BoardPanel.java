@@ -7,15 +7,21 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JPanel;
 
-import Miscelaneous.Constants;
-import parte3.Parte3;
-
+import Miscelaneous.Changes;
 
 public class BoardPanel extends JPanel {
+	
+	//Singleton:---------------------------------------------------
+	private static BoardPanel instance = null;
+	public static BoardPanel getInstance() {
+		if (instance == null) {
+			instance = new BoardPanel();
+		}
+		return instance;
+	}
+	
 	//Attributes:----------------------------------------------------
 	private BoardButton[][] boardButtons = new BoardButton[13][4];
-	private LabelPanel labelPanel;
-	private  ManosPanel manosPanel;
 	ActionListener listener = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -23,13 +29,7 @@ public class BoardPanel extends JPanel {
             	BoardButton target = (BoardButton) e.getSource();
             	target.toggleSelect();
             	
-            	if(target.getNumSelected() >= 3 && target.getNumSelected() <= 5) {
-            		var map = Parte3.solve(labelPanel.getMatrix(), boardToString());
-            		manosPanel.setManosPanel(map);
-            	}
-            	else
-            		manosPanel.resetManosPanel();
-            		
+            	Changes.updateCombinations();            		
             }
         }
 /*TODO!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -45,38 +45,16 @@ public class BoardPanel extends JPanel {
     };
 	
 	//Constructor:---------------------------------------------------
-	public BoardPanel(LabelPanel labelPanel, ManosPanel manosPanel) {
+	public BoardPanel() {
 	    this.setLayout(new GridLayout(13, 4));
 	    this.setSize(new Dimension(200, 300));
 	    this.setPreferredSize(new Dimension(200, 300));
 		initBoardMatrix();
 		this.setVisible(true);
-		this.labelPanel = labelPanel;
-		this.manosPanel = manosPanel;
-	}
-
-	public void reset() {
-		for (int i = 0; i < 13; i++) {
-			for (int j = 0; j < 4; j++) {
-				boardButtons[i][j].setSelect(false);
-			}
-		}
 	}
 	
-	private String boardToString() {
-		String bs = "";
-		for (int i = 0; i < 13; i++) {
-			for (int j = 0; j < 4; j++) {
-				if(boardButtons[i][j].getSelected())
-					bs += boardButtons[i][j].getText();
-			}
-		}
-		return bs;
-	}
 	//Setup:----------------------------------------------------------
 	public void initBoardMatrix() {
-		
-		//Fill matrix of buttons
 		for (int i = 0; i < 13; i++) {
 			for (int j = 0; j < 4; j++) {
 				//Add buttons to the matrix
@@ -86,5 +64,24 @@ public class BoardPanel extends JPanel {
 		}
 	}
 	
+	//Reset:------------------------------------------
+	public void reset() {
+		for (int i = 0; i < 13; i++) {
+			for (int j = 0; j < 4; j++) {
+				boardButtons[i][j].setSelect(false);
+			}
+		}
+	}
 	
+	//Utility:----------------------------------------------------
+	public String boardToString() {
+		String bs = "";
+		for (int i = 0; i < 13; i++) {
+			for (int j = 0; j < 4; j++) {
+				if(boardButtons[i][j].getSelected())
+					bs += boardButtons[i][j].getText();
+			}
+		}
+		return bs;
+	}
 }

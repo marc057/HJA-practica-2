@@ -32,7 +32,7 @@ public class Launcher {
 		mainPanel.add(southPanel, BorderLayout.PAGE_END);
 		
 		// TextField
-		JTextField textField = new JTextField();
+		MyRangeText textField = MyRangeText.getInstance();
 		textField.setPreferredSize(new Dimension(600, 30));
 		northPanel.add(textField);
 
@@ -42,14 +42,14 @@ public class Launcher {
 		labelPerc = new JLabel();
 
 		// Panel containing the label matrix
-		LabelPanel labelPanel = new LabelPanel(textField);
+		LabelPanel labelPanel = LabelPanel.getInstance();
 		mainPanel.add(labelPanel, BorderLayout.WEST);
 		
 		//Manos Panel
-		ManosPanel manosPanel = new ManosPanel();
+		ManosPanel manosPanel = ManosPanel.getInstance();
 		mainPanel.add(manosPanel, BorderLayout.CENTER); //????????????????????????????????
 		//Board panel
-		BoardPanel boardPanel = new BoardPanel(labelPanel, manosPanel);
+		BoardPanel boardPanel = BoardPanel.getInstance();
 		mainPanel.add(boardPanel, BorderLayout.EAST);
 		
 		
