@@ -1,22 +1,39 @@
 package GUI;
 
+import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.util.List;
 import java.util.Map;
 
 import javax.swing.*;
 import aware.LabelAware;
 
-public class ManosPanel extends JPanel implements LabelAware{
+public class ManosPanel extends JPanel{
+	
+	private static ManosPanel instance = null;
+	
+	//Constructor:---------------------------------------------------
+		public ManosPanel() {
+			this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		    this.setSize(new Dimension(200, 200));
+		    this.setPreferredSize(new Dimension(200, 200));
+			this.setVisible(true);
+		}
 
-    private void setManosPanel(Map<String, List<String>> map) {
+    public void setManosPanel(Map<String, List<String>> map) {
+    	this.removeAll();
         for(String key : map.keySet()){
-            
+        	
+        	if(key.equals("combinations"))
+        		continue;
+        	
             JLabel tipoMano = new JLabel(key);
             tipoMano.setVisible(true);
             this.add(tipoMano);
 
-            JProgressBar pBar = new JProgressBar(0, 20);
+            JProgressBar pBar = new JProgressBar(0, 100);
             pBar.setValue(map.get(key).size());
+            pBar.setString(String.valueOf(map.get(key).size()));
             pBar.setStringPainted(true);
             this.add(pBar);
             String cards = "";
@@ -24,25 +41,24 @@ public class ManosPanel extends JPanel implements LabelAware{
                 if (!cards.equals("")) { cards += ","; }
                 cards += card;
             }
-
-            JLabel mano = new JLabel(cards);
-            mano.setVisible(true);
-            this.add(mano);
+            JTextArea mano = new JTextArea(cards);
+            mano.setSize(new Dimension(100, 100));
+            JScrollPane manoScroll = new JScrollPane(mano);
+            manoScroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+     
+            manoScroll.setVisible(true);
+            this.add(manoScroll);
             
-            
-            //Falta string de los paneles con que mano es la que hace eso lol
         }
-		
+        this.updateUI();
 	}
-
-	@Override
-	public void sendSelectionChanged() { // marcos feo
-		
-	}
-
-	@Override
-	public void receiveSelectionChanged() {
-		
-	}
-
+public static ManosPanel getInstance() {
+	if(instance == null)
+		instance = new ManosPanel();
+	return instance;
+}
+ public void resetManosPanel() {
+	 this.removeAll();
+	 this.updateUI();
+ }
 }
