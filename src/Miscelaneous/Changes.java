@@ -2,7 +2,9 @@ package Miscelaneous;
 
 import GUI.BoardButton;
 import GUI.BoardPanel;
+import GUI.LabelButton;
 import GUI.LabelPanel;
+import GUI.Launcher;
 import GUI.ManosPanel;
 import GUI.MyRangeSlider;
 import GUI.MyRangeText;
@@ -18,9 +20,13 @@ public final class Changes {
 	
 	//Methods:--------------------------------------------
 	public static void updateRange() {
-		//TODO
+		//TODO: Abstraer esta logica:
 		//rangeText.updateRange();
+		MyRangeText.getInstance().setText(BoardToTextConverter.textRange(LabelPanel.getInstance().getMatrix()));
+		
 		//rangeSlider.updateRange();
+		Launcher.setValueExternal(LabelButton.getNumSelectedS());
+		
 		updateCombinations();
 	}
 	

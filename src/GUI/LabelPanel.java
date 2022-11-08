@@ -12,11 +12,13 @@ import java.util.List;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import Miscelaneous.BoardToTextConverter;
+import Miscelaneous.Changes;
 import Miscelaneous.Constants;
 import Rankings.Sklansky;
 import aware.LabelAware;
 
-public class LabelPanel extends JPanel implements LabelAware {
+public class LabelPanel extends JPanel {
 	
 	//Singleton:------------------------------------------------------------
 	private static LabelPanel instance = null;
@@ -66,8 +68,7 @@ public class LabelPanel extends JPanel implements LabelAware {
             	LabelButton target = (LabelButton) e.getSource();
             	target.toggleSelect();
             	
-            	MyRangeText.getInstance().setText(textRange());
-            	Launcher.setValueExternal(LabelButton.getNumSelectedS());
+            	Changes.updateRange();
             }
         }
     };
@@ -89,131 +90,6 @@ public class LabelPanel extends JPanel implements LabelAware {
 	//Esto lee la matriz y actualiza el texto del rango corresponde
 	//Lo separa en 3 partes (parejas, suited y offsuited) y luego une las tres partes
 	//Añade comas para separar entre partes cuando son necesarias
-    public String textRange() {
-    	String rng = "";
-    	String rEqual = textRangeEqual();
-    	String rSuited = textRangeSuited();
-    	String rOffSuited = textRangeOffsuited();
-    	
-    
-    	rng += rEqual;
-    	
-    	if (rng.length() > 0 && rSuited.length() > 0)
-    		rng += ",";
-    	
-    	rng += rSuited;
-    	
-    	if (rSuited.length() > 0 && rOffSuited.length() > 0)
-    		rng += ",";
-    	
-    	rng += rOffSuited;
-    	
-		return rng;
-    }
-	
-	private String printRangeLineEqual(int m1, int m2) {
-		if (m1 == -1) //Si intervalo vacio: entonces string vacia
-			return "";
-		if (m2 == -1) //Si intervalo solo tiene una casilla: entonces string de la casilla
-			return lmatrix[m1][m1].getText();
-		if (m2 == 0) //Si intervalo termina en la carta mas alta
-			return lmatrix[m1][m1].getText() + "+";
-		//Si intervalo de almenos 2 elementos que no termina en AA
-		return lmatrix[m2][m2].getText() + "-" + lmatrix[m1][m1].getText();
-	}
-	
-	private String printRangeLineSuited(int m1, int m2, int row) {
-		if (m1 == -1)
-			return "";
-		if (m2 == -1) 
-			return lmatrix[row][m1].getText();
-		if (m2 == row + 1)
-			return lmatrix[row][m1].getText() + "+";
-		return lmatrix[row][m2].getText() + "-" + lmatrix[row][m1].getText();
-	}
-	
-	private String printRangeLineOffSuited(int m1, int m2, int column) {
-		if (m1 == -1)
-			return "";
-		if (m2 == -1) 
-			return lmatrix[m1][column].getText();
-		if (m2 == column + 1)
-			return lmatrix[m1][column].getText() + "+";
-		return lmatrix[m2][column].getText() + "-" + lmatrix[m1][column].getText();
-	}
-	
-	private String textRangeEqual() {
-		int marker1 = -1;
-		int marker2 = -1;
-		String rng = "";
-		
-		for (int i = 12; i >= 0; i--) { //empieza en la ULTIMA (22) y va a la PRIMERA (AA)
-			if (lmatrix[i][i].getSelected()) {
-				if (marker1 == -1)
-					marker1 = i;
-				else
-					marker2 = i;
-			}
-			if (i == 0 || !lmatrix[i][i].getSelected()) {
-				rng += (!rng.equals("") && marker1 != -1 ? "," : "");
-				rng += printRangeLineEqual(marker1, marker2);
-				marker1 = -1;
-				marker2 = -1;
-			}
-		}
-		return (rng);
-	}
-
-	private String textRangeSuited() {
-		int marker1 = -1;
-		int marker2 = -1;
-		String rng = "";
-		
-		for (int i = 11; i >= 0; i--) {
-			for (int j = 12; j > i; j--) {
-				if (lmatrix[i][j].getSelected()) {
-					if (marker1 == -1)
-						marker1 = j;
-					else
-						marker2 = j;
-				}
-				if (j == i + 1 || !lmatrix[i][j].getSelected()) {
-					rng += (!rng.equals("") && marker1 != -1 ? "," : "");
-					rng += printRangeLineSuited(marker1, marker2, i);
-					marker1 = -1;
-					marker2 = -1;
-				}
-			}
-		}
-		
-		return rng;
-	}
-
-	private String textRangeOffsuited() {
-		int marker1 = -1;
-		int marker2 = -1;
-		String rng = "";
-		
-		for (int i = 11; i >= 0; i--) {
-			for (int j = 12; j > i; j--) {
-				//NOTA: j marca la fila e i la columna en esta funcion
-				if (lmatrix[j][i].getSelected()) {
-					if (marker1 == -1)
-						marker1 = j;
-					else
-						marker2 = j;
-				}
-				if (j == i + 1 || !lmatrix[j][i].getSelected()) {
-					rng += (!rng.equals("") && marker1 != -1 ? "," : "");
-					rng += printRangeLineOffSuited(marker1, marker2, i);
-					marker1 = -1;
-					marker2 = -1;
-				}
-			}
-		}
-		
-		return rng;
-	}
 	
 	public void paintRange(String range) throws Exception {
 		List<String> pairs = Arrays.asList(range.split(","));
@@ -401,16 +277,6 @@ public class LabelPanel extends JPanel implements LabelAware {
 				listSelectedNew.remove(matrixSk.getNum(i, j));
 			}
 		}
-		
-	}
-	@Override
-	public void sendSelectionChanged() {
-		// TODO Auto-generated method stub
-		
-	}
-	@Override
-	public void receiveSelectionChanged() {
-		// TODO Auto-generated method stub
 		
 	}
 }

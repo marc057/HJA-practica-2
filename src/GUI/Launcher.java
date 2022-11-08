@@ -5,6 +5,8 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import Miscelaneous.Changes;
+
 public class Launcher {
 	
 	private static Boolean sliderPrintChange = false;
@@ -119,7 +121,8 @@ public class Launcher {
 				double perc = slider.getValue() / 1.69;
 				labelPerc.setText(String.format("%.1f", perc) + "%");
 				labelPanel.redrawSk(slider.getValue()); //Deselecciona las manos que no sirven
-				textField.setText(labelPanel.textRange()); // Actualiza el cuadro de texto
+				//textField.setText(labelPanel.textRange()); // Actualiza el cuadro de texto
+				Changes.updateRange();
 				}
 			}
 	    });
