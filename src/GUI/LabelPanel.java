@@ -108,12 +108,13 @@ public class LabelPanel extends JPanel implements LabelAware {
     }
 	
 	private String printRangeLineEqual(int m1, int m2) {
-		if (m1 == -1)
+		if (m1 == -1) //Si intervalo vacio: entonces string vacia
 			return "";
-		if (m2 == -1)
+		if (m2 == -1) //Si intervalo solo tiene una casilla: entonces string de la casilla
 			return lmatrix[m1][m1].getText();
-		if (m2 == 0)
+		if (m2 == 0) //Si intervalo termina en la carta mas alta
 			return lmatrix[m1][m1].getText() + "+";
+		//Si intervalo de almenos 2 elementos que no termina en AA
 		return lmatrix[m2][m2].getText() + "-" + lmatrix[m1][m1].getText();
 	}
 	
@@ -142,7 +143,7 @@ public class LabelPanel extends JPanel implements LabelAware {
 		int marker2 = -1;
 		String rng = "";
 		
-		for (int i = 12; i >= 0; i--) {
+		for (int i = 12; i >= 0; i--) { //empieza en la ULTIMA (22) y va a la PRIMERA (AA)
 			if (lmatrix[i][i].getSelected()) {
 				if (marker1 == -1)
 					marker1 = i;
@@ -191,6 +192,7 @@ public class LabelPanel extends JPanel implements LabelAware {
 		
 		for (int i = 11; i >= 0; i--) {
 			for (int j = 12; j > i; j--) {
+				//NOTA: j marca la fila e i la columna en esta funcion
 				if (lmatrix[j][i].getSelected()) {
 					if (marker1 == -1)
 						marker1 = j;
@@ -374,6 +376,8 @@ public class LabelPanel extends JPanel implements LabelAware {
 		return new String(carr);
 	}
 	
+	//Se llama cuando el slider pide que se seleccionen las N mejores casillas
+	//Segun el ranking seleccionado
 	public void redrawSk(int n) { 
 	//Mira todas las manos, si estan seleccionadas y si deberian seguir estandolo, si no las quita de select y si deberian estarlo las vuelve a poner
 		List<Double> list = matrixSk.matrixToList();
