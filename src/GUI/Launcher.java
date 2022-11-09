@@ -1,7 +1,15 @@
 package GUI;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Choice;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -49,7 +57,7 @@ public class Launcher {
 		
 		//Manos Panel
 		ManosPanel manosPanel = ManosPanel.getInstance();
-		mainPanel.add(manosPanel, BorderLayout.CENTER); //????????????????????????????????
+		mainPanel.add(manosPanel, BorderLayout.CENTER);
 		//Board panel
 		BoardPanel boardPanel = BoardPanel.getInstance();
 		mainPanel.add(boardPanel, BorderLayout.EAST);
@@ -79,9 +87,7 @@ public class Launcher {
 		resetButton.addActionListener( e -> {
 			labelPanel.reset();
 			boardPanel.reset();
-			textField.setText("");
-			ManosPanel.getInstance().resetManosPanel();
-			slider.setValue(0); //Para que cuando se cambia el rango vuelva a estar en 0%
+			Changes.updateRange();
 			
 		});
 		northPanel.add(resetButton);

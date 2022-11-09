@@ -1,13 +1,18 @@
 package GUI;
 
 import java.awt.Dimension;
-import java.awt.GridLayout;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.*;
-import aware.LabelAware;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.ScrollPaneConstants;
 
+@SuppressWarnings("serial")
 public class ManosPanel extends JPanel{
 	
 	private static ManosPanel instance = null;

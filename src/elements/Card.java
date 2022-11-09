@@ -1,8 +1,5 @@
 package elements;
 
-import java.util.Arrays;
-import java.util.List;
-
 import Miscelaneous.Constants;
 
 public class Card implements Comparable<Card>{	

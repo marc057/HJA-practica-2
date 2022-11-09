@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Ranking {
-	private static final int NumLabels = 13*13;
 	protected double[][] matrix = new double[13][13];
 	
 	protected Ranking() {

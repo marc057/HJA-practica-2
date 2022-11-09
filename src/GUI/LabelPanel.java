@@ -10,14 +10,12 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 
-import Miscelaneous.BoardToTextConverter;
 import Miscelaneous.Changes;
 import Miscelaneous.Constants;
 import Rankings.Sklansky;
-import aware.LabelAware;
 
+@SuppressWarnings("serial")
 public class LabelPanel extends JPanel {
 	
 	//Singleton:------------------------------------------------------------

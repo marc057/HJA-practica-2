@@ -2,6 +2,7 @@ package GUI;
 
 import javax.swing.JTextField;
 
+@SuppressWarnings("serial")
 public class MyRangeText extends JTextField{
 	//Singleton:---------------------------------------
 	private static MyRangeText instance = null;

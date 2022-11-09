@@ -196,18 +196,6 @@ public class Parte3 {
 		}
 	}
 	
-	private static void displayResult(Map<String, List<String>> combinations) {
-		String out = "";
-		int combos = combinations.get(COMBINATIONS_STR).size();
-		
-		for (String key : combinations.keySet()) {
-			if (key.equals(COMBINATIONS_STR)) { continue; }
-			out += key + ": " + combinations.get(key) + "/" + combos + "\n";
-		}
-		
-		System.out.print(out);
-	}
-	
 	private static void increase(Map<String, List<String>> combinations, String name, String playerHand) {
 		combinations.putIfAbsent(name, new ArrayList<>());
 		List<String> listActual = new ArrayList<>(combinations.get(name));

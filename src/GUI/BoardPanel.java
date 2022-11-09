@@ -9,6 +9,7 @@ import javax.swing.JPanel;
 
 import Miscelaneous.Changes;
 
+@SuppressWarnings("serial")
 public class BoardPanel extends JPanel {
 	
 	//Singleton:---------------------------------------------------
@@ -32,16 +33,6 @@ public class BoardPanel extends JPanel {
             	Changes.updateCombinations();            		
             }
         }
-/*TODO!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
- FALTA ACTUALIZAR PARA:
- -Rango tabla
- -Slider
- -Print
- -Reset
- 
- Hay cosas que se siguen repitiendo cuando coges 4 o 5 cartas en board :D
- */
-
     };
 	
 	//Constructor:---------------------------------------------------
