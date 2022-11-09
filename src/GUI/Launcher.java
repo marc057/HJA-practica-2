@@ -64,10 +64,7 @@ public class Launcher {
 				
 				labelPanel.paintRange(textField.getText().replaceAll("\\s+", ""));
 				
-				int newSliderValue = LabelButton.getNumSelectedS();
-				
-				setValueExternal(newSliderValue);
-				
+				Changes.updateCombinations();
 				
 			} catch (Exception exc) {
 				JOptionPane.showMessageDialog(frame, exc.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
