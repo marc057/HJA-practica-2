@@ -13,6 +13,7 @@ import javax.swing.JPanel;
 
 import Miscelaneous.Changes;
 import Miscelaneous.Constants;
+import Rankings.Ranking;
 import Rankings.Sklansky;
 
 @SuppressWarnings("serial")
@@ -31,7 +32,7 @@ public class LabelPanel extends JPanel {
 	//Attributes:-----------------------------------------------------------------
 	private LabelButton[][] lmatrix;
 	
-	private Sklansky matrixSk = new Sklansky(); //Matriz con los valores de el ranking Sklansky
+	private Ranking ranking = new Sklansky(); //Matriz con los valores de el ranking Sklansky
 	
 	//Getters:---------------------------------------------------------------------
 	public static String numToString(int c) { return String.valueOf(Constants.CardNumbers.get(c)); }
@@ -58,6 +59,13 @@ public class LabelPanel extends JPanel {
 			}
 		}
 	}
+	
+	//Setters:-----------------------------------
+	public void setRanking(Ranking ranking) {
+		this.ranking = ranking;
+	}
+	
+	
 	
 	ActionListener listener = new ActionListener() {
         @Override
@@ -258,7 +266,7 @@ public class LabelPanel extends JPanel {
 	//Segun el ranking seleccionado
 	public void redrawSk(int n) { 
 	//Mira todas las manos, si estan seleccionadas y si deberian seguir estandolo, si no las quita de select y si deberian estarlo las vuelve a poner
-		List<Double> list = matrixSk.matrixToList();
+		List<Double> list = ranking.matrixToList();
 		
 		Collections.sort(list);
 		Collections.reverse(list);
@@ -270,9 +278,9 @@ public class LabelPanel extends JPanel {
 		}
 		for (int i = 0; i < 13; i++) {
 			for (int j = 0; j < 13; j++) {
-				boolean newValue = listSelectedNew.contains(matrixSk.getNum(i, j));
+				boolean newValue = listSelectedNew.contains(ranking.getNum(i, j));
 				setSelect(i, j, newValue);
-				listSelectedNew.remove(matrixSk.getNum(i, j));
+				listSelectedNew.remove(ranking.getNum(i, j));
 			}
 		}
 		

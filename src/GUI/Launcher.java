@@ -3,8 +3,13 @@ import java.awt.BorderLayout;
 import java.awt.Choice;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -14,6 +19,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import Miscelaneous.Changes;
+import Rankings.*;
 
 public class Launcher {
 	
@@ -21,8 +27,15 @@ public class Launcher {
 	private static JSlider slider;
 	private static JLabel labelPerc;
 	
+	private static Map<String, Ranking> rankings = new HashMap<>();	
 	
 	public static void main(String[] args) {
+		
+		//Initialization:------
+		rankings.put("Sklansky ranking", new Sklansky());
+		rankings.put("Pushbot small blind", new PushbotSmallBlind());
+		rankings.put("Pushbot big blind", new PushbotBigBlind());
+		//--------------------
 		
 		JFrame frame = new JFrame("FakeStove");
 		frame.setSize(new Dimension(1400, 800));
@@ -110,9 +123,19 @@ public class Launcher {
 		labelRanking.setText("Ranking used:");
 				
 		//Para elegir que ranking usar
-		Choice choice = new Choice();
-		choice.add("Sklansky Chubukov");
-		choice.add("Heads up Hold'em");
+		JComboBox<String> choice = new JComboBox<String>();
+		for(String key : rankings.keySet()) {
+			choice.addItem(key);
+		}
+		choice.addActionListener(
+				new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						Ranking selectedRanking = rankings.get(choice.getSelectedItem() );
+						labelPanel.setRanking(selectedRanking);
+					}
+				}
+			);
 		
 		//Crear matrices de los rankings
 		
