@@ -14,6 +14,33 @@ import elements.HandPair;
 
 public class Parte3 {
 	
+	static List<String> hands = Arrays.asList(
+		Hand.StraightFlush,
+		Hand.Poker,
+		Hand.FullHouse,
+		Hand.Flush,
+		Hand.Straight,
+		Hand.Trio,
+		Hand.TwoPair,
+		HandPair.Overpair,
+		HandPair.TopPair,
+		HandPair.PocketBelow,
+		HandPair.MiddlePair,
+		HandPair.WeakPair,
+		Hand.HighCard
+	);
+			
+			public static final String StraightFlush = "Straight flush"; //Escalera color
+			public static final String Poker = "Poker"; //4 of a kind
+			public static final String FullHouse = "Full house"; //3 and 2 of a kind 
+			public static final String Flush = "Flush"; //Color 
+			public static final String Straight = "Straight"; //Escalera
+			public static final String Trio = "Trio"; //3 of a kind 
+			public static final String TwoPair = "Two pair"; //2 and 2 of a kind 
+			public static final String Pair = "Pair"; //2 of a kind 
+			public static final String HighCard = "High card";
+			
+	
 	private static final String COMBINATIONS_STR = "combinations";
 	
 	public static Map<String, List<String>> solve(LabelButton[][] lmatrix, String board) {
@@ -41,8 +68,13 @@ public class Parte3 {
 		//Form all possible hands that include at least 1 card from pair
 		Map<String, List<String>> combinations = new HashMap<>();
 		int size = boardCards.size();
-		List<Card> fromPlayer;
+		List<Card> fromPlayer = null;
 		List<Card> fromBoard; 
+		
+		String bestResult = null;
+		String thisResult;
+		int bestIdx;
+		int thisIdx;
 		
 		for (List<Card> pair : pairs) {
 			switch(size) {
@@ -53,9 +85,12 @@ public class Parte3 {
 				fromBoard = new ArrayList<>();
 				fromBoard.addAll(boardCards);
 				
-				processHand(combinations, fromPlayer, fromBoard);
+				thisResult =  processHand(combinations, fromPlayer, fromBoard);
+				increase(combinations, thisResult, listToString(fromPlayer));
 				break;
 			case 4: //Pick 1-2(out of 2) from pair and 3-4(out of 4) from board
+				bestIdx = 100;
+				
 				//Pick 2 from pair:----------------
 				for (int ig = 0; ig < size; ig++) { //Select ignored card from board
 					fromPlayer = new ArrayList<>();
@@ -66,8 +101,16 @@ public class Parte3 {
 						if (ig == i) { continue; }
 						fromBoard.add(boardCards.get(i));
 					}
-					processHand(combinations, fromPlayer, fromBoard);
+					thisResult =  processHand(combinations, fromPlayer, fromBoard);
+					thisIdx = hands.indexOf(thisResult);
+					if (thisIdx < bestIdx) {
+						bestIdx = thisIdx;
+						bestResult = thisResult;
+					}
 				}
+				
+				increase(combinations, bestResult, listToString(fromPlayer));
+				
 				//Pick 1 from pair:---------------
 				for (int i = 0; i < 2; i++) { //Select picked card from pair
 					fromPlayer = new ArrayList<>();
@@ -75,10 +118,13 @@ public class Parte3 {
 					
 					fromBoard = new ArrayList<>();
 					fromBoard.addAll(boardCards);
-					processHand(combinations, fromPlayer, fromBoard);
+					thisResult = processHand(combinations, fromPlayer, fromBoard);
+					increase(combinations, thisResult, listToString(fromPlayer));
 				}
 				break;
 			case 5: //Pick 1-2(out of 2) from pair and 3-4(out of 5) from board
+				bestIdx = 100;
+				
 				//Pick 2 from pair:----------------
 				for (int ig1 = 0; ig1 < size; ig1++) { //Select 2 ignored cards from board
 					for (int ig2 = ig1 + 1; ig2 < size; ig2++) {
@@ -90,11 +136,19 @@ public class Parte3 {
 							if (ig1 == i || ig2 == i) { continue; }
 							fromBoard.add(boardCards.get(i));
 						}
-						processHand(combinations, fromPlayer, fromBoard);
+						thisResult = processHand(combinations, fromPlayer, fromBoard);
+						thisIdx = hands.indexOf(thisResult);
+						if (thisIdx < bestIdx) {
+							bestIdx = thisIdx;
+							bestResult = thisResult;
+						}
 					}
 				}
+				increase(combinations, bestResult, listToString(fromPlayer));
+				
 				//Pick 1 from pair:---------------
 				for (int i = 0; i < 2; i++) { //Select picked card from pair
+					bestIdx = 100;
 					for (int ig = 0; ig < size; ig++) { //Select ignored card from board
 						fromPlayer = new ArrayList<>();
 						fromPlayer.add(pair.get(i));
@@ -104,13 +158,27 @@ public class Parte3 {
 							if (j == ig) { continue; }
 							fromBoard.add(boardCards.get(j));
 						}
-						processHand(combinations, fromPlayer, fromBoard);
-					}				
+						thisResult = processHand(combinations, fromPlayer, fromBoard);
+						thisIdx = hands.indexOf(thisResult);
+						if(thisIdx < bestIdx) {
+							bestIdx = thisIdx;
+							bestResult = thisResult;
+						}
+					}	
+					increase(combinations, bestResult, listToString(fromPlayer));
 				}
 				break;
 			}
 		}
 		return combinations;
+	}
+	
+	private static String listToString(List<Card> fromPlayer) {
+		String playerHand = "";
+		for (Card pHand : fromPlayer) {
+			playerHand += pHand.toString();
+		}
+		return playerHand;
 	}
 	
 	private static List<List<Card>> boxToCards(String box, List<Card> boardCards) {
@@ -144,7 +212,7 @@ public class Parte3 {
 		return output;
 	}
 	
-	private static void processHand(Map<String, List<String>> combinations, List<Card> fromPlayer, List<Card> fromBoard) {
+	private static String processHand(Map<String, List<String>> combinations, List<Card> fromPlayer, List<Card> fromBoard) {
 		fromPlayer.sort(null);
 		fromBoard.sort(null);
 		
@@ -162,7 +230,8 @@ public class Parte3 {
 		}
 		
 		if (!handName.equals(Hand.Pair)) {
-			increase(combinations, handName, playerHand);
+			//increase(combinations, handName, playerHand);
+			return handName;
 		}
 		else {
 			HandPair pairHand = (HandPair) hand;
@@ -176,21 +245,26 @@ public class Parte3 {
 			//Es de pocket?
 			if (fromPlayer.size() == 2 && isPocket) {
 				if (pairNum < fromBoard.get(0).getNumber()) { //Es overpair?
-					increase(combinations, HandPair.Overpair, playerHand);
+					//increase(combinations, HandPair.Overpair, playerHand);
+					return HandPair.Overpair;
 				}
 				else {//Es pocket pair below top pair
-					increase(combinations, HandPair.PocketBelow, playerHand);
+					//increase(combinations, HandPair.PocketBelow, playerHand);
+					return HandPair.PocketBelow;
 				}
 			}
 			else { // No es pocket:
 				if (fromBoard.get(0).getNumber() == pairNum) {//Es top pair?
-					increase(combinations, HandPair.TopPair, playerHand);
+					//increase(combinations, HandPair.TopPair, playerHand);
+					return HandPair.TopPair;
 				}
 				else if (fromBoard.get(1).getNumber() == pairNum) { //Es middle pair!
-					increase(combinations, HandPair.MiddlePair, playerHand);
+					//increase(combinations, HandPair.MiddlePair, playerHand);
+					return HandPair.MiddlePair;
 				}
 				else { // Weak pair
-					increase(combinations, HandPair.WeakPair, playerHand);
+					//increase(combinations, HandPair.WeakPair, playerHand);
+					return HandPair.WeakPair;
 				}
 			}
 		}
@@ -274,7 +348,10 @@ public class Parte3 {
 		//Trio:
 		if (longestSet == 3) { return new Hand(Hand.Trio); }
 		//Two pair:
-		if (hasTwoPair) { return new Hand(Hand.TwoPair); }
+		if (hasTwoPair) {
+			//return new Hand(Hand.TwoPair);
+			return new HandPair(highestPair);
+		}
 		//Pair:
 		if (longestSet == 2) { return new HandPair(highestPair); }
 		//High card:
